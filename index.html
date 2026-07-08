@@ -174,7 +174,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 
 <div class="season-banner">
   <span class="season-pill"><span class="pulse"></span> 2026 grad season open</span>
-  <span>Applications close <strong>Feb&#8211;Mar 2026</strong> &middot; <strong>347 grads</strong> posting live</span>
+  <span>2026 graduate season &middot; Check each company careers page for current dates</span>
 </div>
 
 <div id="home">
@@ -221,22 +221,15 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
     </div>
     <div>
       <div class="widget">
-        <div class="widget-head"><span class="widget-title">Closing soon</span></div>
+        <div class="widget-head"><span class="widget-title">Applications</span></div>
         <div class="widget-body">
-          <div class="open-row"><div class="open-dot-sm"></div><span class="open-co">Goldman Sachs IBD</span><span class="open-closes">31 Jan</span></div>
-          <div class="open-row"><div class="open-dot-sm"></div><span class="open-co">McKinsey BA</span><span class="open-closes">15 Feb</span></div>
-          <div class="open-row"><div class="open-dot-sm"></div><span class="open-co">Google APM</span><span class="open-closes">28 Feb</span></div>
-          <div class="open-row"><div class="open-dot-sm"></div><span class="open-co">King &amp; Wood Mallesons</span><span class="open-closes">5 Mar</span></div>
-          <div class="open-row"><div class="open-dot-sm" style="background:var(--amber)"></div><span class="open-co">BHP Grad Engineer</span><span class="open-closes" style="color:var(--amber)">14 Mar</span></div>
+          <div style="font-size:12.5px;color:var(--muted);line-height:1.6">Always check each company&#8217;s careers page directly for current opening and closing dates &#8212; dates change each year and vary by stream.</div>
         </div>
       </div>
       <div class="widget">
         <div class="widget-head"><span class="widget-title">Today <span class="pulse"></span></span></div>
-        <div class="widget-body" style="display:flex;flex-direction:column;gap:.55rem">
-          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Updates posted</span><span style="font-family:var(--mono);font-size:13px">47</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Offers reported</span><span style="font-family:var(--mono);font-size:13px;color:var(--accent)">8</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Invites reported</span><span style="font-family:var(--mono);font-size:13px;color:var(--blue)">19</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Rejections</span><span style="font-family:var(--mono);font-size:13px;color:var(--red)">11</span></div>
+        <div class="widget-body">
+          <div style="font-size:12.5px;color:var(--muted);line-height:1.6">Live activity will appear here as grads post their updates. Be the first to share your experience.</div>
         </div>
       </div>
     </div>
@@ -249,10 +242,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
     <div class="anon-bar">&#128274; Posted anonymously &#8212; only your uni, degree, and WAM range are shown.</div>
     <div class="m2">
       <div class="mf"><div class="ml">Company</div>
-        <select class="ms">
-          <option>Goldman Sachs</option><option>McKinsey</option><option>PwC</option><option>Deloitte</option>
-          <option>CBA</option><option>ANZ</option><option>BHP</option><option>Treasury</option><option>Google</option><option>Other</option>
-        </select>
+        <input class="mi" type="text" id="modalCompany" placeholder="e.g. Goldman Sachs, Atlassian, Rio Tinto…" autocomplete="off">
       </div>
       <div class="mf"><div class="ml">What happened?</div>
         <select class="ms">
@@ -287,11 +277,11 @@ var programs = [
     sector:"Finance",
     location:"Sydney",
     status:"open",
-    closes:"31 Jan 2026",
+    closes:"",
     abbr:"GS",
     bg:"#e8f0eb",
     color:"#2a5a3b",
-    submissions:84,
+    submissions:0,
     responseRate:58,
     interviewRate:22,
     offerRate:6,
@@ -319,12 +309,7 @@ var programs = [
       {q:"What would you do if a colleague shared confidential information and your manager wanted to know about it?",type:"Situational",stage:"Superday",votes:58},
       {q:"Tell me something not on your resume that you are proud of.",type:"Motivational",stage:"Superday",votes:52}
     ],
-    feed:[
-      {who:"UNSW \u00b7 Commerce/Finance \u00b7 WAM 78",stage:"invite",stageLabel:"Superday invite",time:"2h ago",body:"Just got the email. First round superday scheduled for next week. Applied early October so about 6 weeks from application to this point. HireVue had 6 questions, 2 min each, mix of behavioural and market questions. Felt more technical than I expected.",likes:12,metoo:8},
-      {who:"USYD \u00b7 Economics \u00b7 WAM 82",stage:"offer",stageLabel:"Offer received",time:"4h ago",body:"Verbal offer today for IBD Sydney. 10 weeks application to offer. Superday was three back-to-back 30-min sessions via Zoom. Interviewers asked about a deal I was following and walked through a basic DCF. Good luck to everyone still in the process.",likes:47,metoo:0},
-      {who:"Melbourne \u00b7 Commerce \u00b7 WAM 75",stage:"waiting",stageLabel:"Still waiting",time:"8h ago",body:"Completed the HireVue 3 weeks ago, nothing since. The AI scoring element is stressful not knowing what they are looking for. Anyone else still in limbo for IBD?",likes:31,metoo:19},
-      {who:"ANU \u00b7 Economics \u00b7 WAM 79",stage:"invite",stageLabel:"Superday invite",time:"1d ago",body:"Got the superday invite. First time going this far in any process. Preparing on DCF and recent M&A. Any tips on the Zoom format \u2014 do they run back to back with no break?",likes:18,metoo:6}
-    ],
+    feed:[],
     reviews:[
       {who:"Commerce grad \u00b7 USYD \u00b7 2025",stars:4,text:"Process was thorough but fair. HireVue was the hardest part \u2014 timed numerical reasoning with very little prep time. Superday was intense, two back-to-back 30-minute sessions, but interviewers were genuinely curious about how you think rather than testing memorised answers."},
       {who:"Eng/Commerce \u00b7 UNSW \u00b7 2025",stars:5,text:"The Explore Goldman Sachs event was worth attending \u2014 my application moved directly to HireVue after. Superday was almost entirely behavioural for my division with one technical question. Two interviewers to one candidate in one session, one-on-one in the other."},
@@ -338,11 +323,11 @@ var programs = [
     sector:"Consulting",
     location:"Sydney / Melbourne",
     status:"open",
-    closes:"15 Feb 2026",
+    closes:"",
     abbr:"MK",
     bg:"#e8edf5",
     color:"#2a4a7a",
-    submissions:61,
+    submissions:0,
     responseRate:71,
     interviewRate:18,
     offerRate:5,
@@ -369,11 +354,7 @@ var programs = [
       {q:"Profits at our client dropped 15% year on year. Where do you start?",type:"Case \u2014 Profitability",stage:"Interview",votes:128},
       {q:"When did you influence a senior stakeholder who initially disagreed with your recommendation?",type:"PEI \u2014 Personal Impact",stage:"Final round",votes:98}
     ],
-    feed:[
-      {who:"Melbourne \u00b7 Science \u00b7 WAM 81",stage:"invite",stageLabel:"First round invite",time:"3h ago",body:"Got first round case interviews. Two slots next week. Studied cases for 6 weeks. The Solve assessment format has changed in recent years \u2014 older prep resources may be outdated. Check the McKinsey careers page for the current version before you prepare.",likes:22,metoo:11},
-      {who:"USYD \u00b7 Law \u00b7 WAM 77",stage:"reject",stageLabel:"Rejected",time:"1d ago",body:"Rejected after second round with no feedback. Process was well-run and communication was prompt throughout. The case difficulty jumps noticeably in the partner round \u2014 more open-ended and ambiguous. Would reapply.",likes:39,metoo:14},
-      {who:"ANU \u00b7 Commerce \u00b7 WAM 83",stage:"offer",stageLabel:"Offer received",time:"2d ago",body:"Got the call today. The PEI is weighted equally to the case \u2014 do not treat it as secondary. Have three concrete stories with real specificity. They will ask exactly what you said, how the other person responded, what you were thinking in that moment. Vague answers fail here.",likes:68,metoo:0}
-    ],
+    feed:[],
     reviews:[
       {who:"Science grad \u00b7 Melbourne \u00b7 2025",stars:5,text:"Best recruiting process I went through. Interviewers were sharp but respectful. The PEI goes much deeper than a standard behavioural interview \u2014 they will probe your initial answer for 10\u201315 minutes on a single story. Cases are candidate-led which I prefer."},
       {who:"Law student \u00b7 USYD \u00b7 2025",stars:4,text:"Rejection after second round with no feedback. Process was well-organised and communication was prompt at every stage. Case difficulty increases significantly in round two. Partner-round cases are noticeably more ambiguous and open-ended."},
@@ -387,11 +368,11 @@ var programs = [
     sector:"Accounting",
     location:"Sydney / Melbourne / Brisbane / Perth",
     status:"open",
-    closes:"1 Mar 2026",
+    closes:"",
     abbr:"PW",
     bg:"#fdeaea",
     color:"#b54040",
-    submissions:96,
+    submissions:0,
     responseRate:79,
     interviewRate:33,
     offerRate:11,
@@ -415,11 +396,7 @@ var programs = [
       {q:"How do your personal values align with PwC values of integrity, excellence, collaboration, and service?",type:"Motivational",stage:"Interview",votes:97},
       {q:"Describe a time you took initiative on a project beyond what was expected of you.",type:"Behavioural",stage:"Interview",votes:64}
     ],
-    feed:[
-      {who:"USYD \u00b7 Commerce/Accounting \u00b7 WAM 76",stage:"invite",stageLabel:"AC invite",time:"7h ago",body:"Assessment centre invite for Assurance stream. Sydney, 22 May. For anyone wondering \u2014 the digital interview really is just one question. Not 2\u20134 like most prep sites say. Focus on a clear answer about your experience and motivations.",likes:19,metoo:6},
-      {who:"Macquarie \u00b7 Commerce \u00b7 WAM 73",stage:"offer",stageLabel:"Offer received",time:"2d ago",body:"Got the offer for Melbourne Assurance. Applied to 12 firms and this is the first offer. Process was 29 days from application. The group case in the AC morning was the most realistic and engaging part of any process I went through.",likes:52,metoo:0},
-      {who:"Melbourne \u00b7 Commerce \u00b7 WAM 71",stage:"reject",stageLabel:"Rejected at HireVue",time:"3d ago",body:"Did not progress past the digital interview. Communication was poor \u2014 rejection came 3 weeks after with no update in between. The online assessments were fine but unclear what the HireVue was actually assessing on a single question.",likes:28,metoo:17}
-    ],
+    feed:[],
     reviews:[
       {who:"Commerce grad \u00b7 UNSW \u00b7 2025",stars:4,text:"Good communication throughout. Heard back within a week at every stage. Digital interview felt awkward but the AC was well-structured. Group case in the morning was genuinely interesting \u2014 felt like actual consulting work. CA program support from day one is the real draw."},
       {who:"Multiple applicants \u00b7 Whirlpool 2025",stars:3,text:"Whirlpool thread confirms digital interview is one question in 2025 cycle. AC dates: Adelaide/Canberra May 7, Brisbane/Perth May 9\u201310, Melbourne May 14\u201315, Sydney May 22\u201323 (2024 cycle for reference). Rejection batch emails went out approximately 3 weeks after AC with no intermediate communication."}
@@ -432,11 +409,11 @@ var programs = [
     sector:"Finance",
     location:"Sydney",
     status:"open",
-    closes:"20 Feb 2026",
+    closes:"",
     abbr:"CB",
     bg:"#e8edf5",
     color:"#2a4a7a",
-    submissions:112,
+    submissions:0,
     responseRate:74,
     interviewRate:28,
     offerRate:9,
@@ -463,11 +440,7 @@ var programs = [
       {q:"Give me an example of a time you demonstrated integrity in a genuinely challenging situation.",type:"Behavioural",stage:"Interview",votes:61},
       {q:"Tell me about yourself and walk me through why you are applying to CBA.",type:"Motivational",stage:"HireVue",votes:58}
     ],
-    feed:[
-      {who:"Melbourne \u00b7 CS \u00b7 WAM 74",stage:"waiting",stageLabel:"Still waiting",time:"5h ago",body:"Completed the HireVue 3 weeks ago and nothing since. The 7-question format took about 25 minutes. Anyone else still waiting on the Tech stream? Results apparently don\u2019t drop until late March even if you applied in February.",likes:8,metoo:23},
-      {who:"UNSW \u00b7 Software Eng \u00b7 WAM 77",stage:"invite",stageLabel:"AC invite",time:"1d ago",body:"Assessment centre invite for Tech stream. Full day in Sydney. Two parts: formal interview with 2 assessors in the morning, then a group task with 4 other candidates. Anyone done the CBA tech AC recently and know what the group task involves?",likes:15,metoo:9},
-      {who:"UTS \u00b7 Info Systems \u00b7 WAM 69",stage:"reject",stageLabel:"Rejected at HireVue",time:"2d ago",body:"Did not pass the HireVue for the Data & Analytics stream. Market trend question caught me off guard \u2014 prepare something specific, not just a generic answer about AI. They want you to show genuine interest in what is actually happening in finance and tech.",likes:34,metoo:21}
-    ],
+    feed:[],
     reviews:[
       {who:"Commerce/Finance grad \u00b7 UNSW \u00b7 2025",stars:4,text:"Process: online application, SHL psychometric (numerical, inductive, personality), HireVue with ~7 questions, then assessment centre. No technical finance questions in any interview. Video interview covered industry trends and general motivations. AC group task was the most interesting component."},
       {who:"CS grad \u00b7 UNSW \u00b7 2025",stars:4,text:"Process took about 2 months total. The assessment centre was the most valuable part \u2014 both to be assessed and to understand if I actually wanted the role. Group task involved a realistic business scenario. Rotational program is genuinely broad exposure across the bank."},
@@ -481,11 +454,11 @@ var programs = [
     sector:"Government",
     location:"Canberra / Sydney / Various",
     status:"open",
-    closes:"1 Apr 2026",
+    closes:"",
     abbr:"AG",
     bg:"#e8f0eb",
     color:"#2a5a3b",
-    submissions:74,
+    submissions:0,
     responseRate:82,
     interviewRate:38,
     offerRate:16,
@@ -506,11 +479,7 @@ var programs = [
       {q:"Give an example of a time you identified an insight from data that influenced a decision.",type:"Behavioural",stage:"Interview",votes:61},
       {q:"Tell me about a time you had to prioritise competing tasks or projects. How did you decide what to focus on?",type:"Behavioural",stage:"Interview",votes:54}
     ],
-    feed:[
-      {who:"ANU \u00b7 Data Science \u00b7 WAM 81",stage:"offer",stageLabel:"Offer received",time:"3d ago",body:"ABS offer confirmed as first preference. Process from interview to offer took about 6 weeks. Two-day Canberra orientation is mandatory but they support interstate relocation. If you want a specific city email the agency directly after offer \u2014 they have some flexibility.",likes:33,metoo:0},
-      {who:"Melbourne \u00b7 Statistics \u00b7 WAM 76",stage:"invite",stageLabel:"Interview invite",time:"5d ago",body:"Interview invite came through around May 8, consistent with what others on Whirlpool reported for last year. Virtual panel, ~30 minutes, STAR format. Research the APS Graduate Capability framework specifically \u2014 not generic public service values.",likes:24,metoo:7},
-      {who:"UNSW \u00b7 CS \u00b7 WAM 72",stage:"waiting",stageLabel:"Still waiting",time:"1w ago",body:"Passed the online assessment but no interview invite yet. Is anyone else still waiting? The thread from last year suggests some people heard later than others depending on which agency stream they applied for.",likes:18,metoo:29}
-    ],
+    feed:[],
     reviews:[
       {who:"Data Science grad \u00b7 ANU \u00b7 2025",stars:4,text:"Applied to ABS as first preference and got an offer. The process is opaque \u2014 long gaps between stages with little communication. Interview invites went out around May 8, consistent with Whirlpool. Two-day Canberra orientation is mandatory. Email the agency directly after offer if you want to negotiate placement city."},
       {who:"Engineering/Statistics \u00b7 2025",stars:3,text:"Applied for the Data Scientist stream. Did not hear back after the online assessment. High volume of applicants means the assessment is a real filter. Only about 1 in 4 people on the Whirlpool thread appeared to make it through to interview based on reporting."},
@@ -524,11 +493,11 @@ var programs = [
     sector:"Finance",
     location:"Sydney / Melbourne / Brisbane",
     status:"open",
-    closes:"22 Apr 2026",
+    closes:"",
     abbr:"AN",
     bg:"#e8edf5",
     color:"#2a4a7a",
-    submissions:67,
+    submissions:0,
     responseRate:72,
     interviewRate:26,
     offerRate:8,
@@ -553,11 +522,7 @@ var programs = [
       {q:"Tell me about a time you worked effectively as part of a team toward a shared goal.",type:"Behavioural",stage:"Final Interview",votes:87},
       {q:"How do ANZ values of integrity, collaboration, accountability, respect, and excellence align with your own?",type:"Motivational",stage:"Final Interview",votes:72}
     ],
-    feed:[
-      {who:"Melbourne \u00b7 Commerce/Finance \u00b7 WAM 76",stage:"invite",stageLabel:"Final interview invite",time:"1d ago",body:"Final interview invite for ANZ Plus stream. Good to know: ANZ Plus has no assessment centre \u2014 it goes straight to final interview after the digital interview. Also: if you did Pymetrics for another company in the last 330 days your scores carry over and you cannot redo it. ANZ said this is fine.",likes:24,metoo:9},
-      {who:"UNSW \u00b7 Economics \u00b7 WAM 74",stage:"waiting",stageLabel:"Still waiting",time:"2d ago",body:"Finished Pymetrics and SHL personality questionnaire. Waiting on the digital interview link. Pymetrics carried over from a PwC application 2 months ago. Anyone know if ANZ actually checks the individual game scores or just the overall profile?",likes:18,metoo:31},
-      {who:"UQ \u00b7 Commerce \u00b7 WAM 72",stage:"reject",stageLabel:"Rejected at Pymetrics",time:"4d ago",body:"Rejected automatically after Pymetrics \u2014 the rejection email made it pretty clear it was based on the game scores. Other companies using the same Pymetrics test progressed me fine, so it seems ANZ weights certain traits differently. Nothing you can do if your old scores do not match their profile.",likes:41,metoo:22}
-    ],
+    feed:[],
     reviews:[
       {who:"Commerce grad \u00b7 Melbourne \u00b7 2025",stars:4,text:"Process moved quickly once you start. Pymetrics took 30 minutes, SHL questionnaire arrived the same evening. HireVue had 6 questions including some gamified components alongside the video questions. Camera was on the whole time. Final interview was relaxed and conversational."},
       {who:"Glassdoor \u00b7 Melbourne \u00b7 2024",stars:3,text:"Virtual digital interview with 6 questions: STAR behavioural and some gamified assessments. Camera is on throughout including during the games. Standard behavioural questions expected STAR responses. Asking about difficult situations and learning new things quickly."},
@@ -571,11 +536,11 @@ var programs = [
     sector:"Accounting",
     location:"Sydney / Melbourne / Brisbane / Perth",
     status:"open",
-    closes:"Mar 2026",
+    closes:"",
     abbr:"DL",
     bg:"#fdf3e3",
     color:"#c17d2a",
-    submissions:88,
+    submissions:0,
     responseRate:68,
     interviewRate:29,
     offerRate:10,
@@ -600,11 +565,7 @@ var programs = [
       {q:"Describe a time you worked through a complex analytical problem. How did you structure your thinking?",type:"Behavioural",stage:"Assessment Day",votes:94},
       {q:"What do you know about the challenges facing our clients in this sector right now?",type:"Technical",stage:"Assessment Day",votes:78}
     ],
-    feed:[
-      {who:"UNSW \u00b7 Commerce/Accounting \u00b7 WAM 75",stage:"invite",stageLabel:"AC invite",time:"6h ago",body:"Portal updated to Assessment Day status for both my streams. Key tip: if the Deloitte portal says Assessment Day it means you have been scheduled, not just that you are still in the running from the digital interview stage. This confused a lot of people on the Whirlpool thread.",likes:33,metoo:12},
-      {who:"Macquarie \u00b7 Business \u00b7 WAM 71",stage:"reject",stageLabel:"Rejected at OA",time:"2d ago",body:"Did not pass the Cappfinity immersive assessment. Hardest OA I have done \u2014 very different from SHL numerical/verbal. Client scenario-based, time-factored on some questions. The cut-off is widely reported as around the 70th percentile though unconfirmed. Practice Cappfinity specifically, not just SHL.",likes:44,metoo:28},
-      {who:"USYD \u00b7 Commerce/Finance \u00b7 WAM 78",stage:"offer",stageLabel:"Offer received",time:"4d ago",body:"Offer for Consulting stream, Melbourne. 7 days from AC to offer. Group case in the morning involved 3 of us working through a client scenario \u2014 genuinely interesting and felt like real consulting work. 1-on-1 in the afternoon was with a partner. Relaxed but substantive.",likes:56,metoo:0}
-    ],
+    feed:[],
     reviews:[
       {who:"Commerce grad \u00b7 Sydney \u00b7 2026",stars:4,text:"Process was smooth overall. Four questions in the digital interview: tell me about yourself, learning a new technology, leadership example, and motivation question. Assessment day had a group case study with 2 other candidates and then a 1-on-1 interview with a senior leader. Offer came within a week of the AC."},
       {who:"Whirlpool thread \u00b7 2025",stars:3,text:"The Cappfinity immersive OA is the hardest part. It is mostly un-timed but some questions are time-factored \u2014 the speed of your response contributes to your score. Cut-off is around the 70th percentile. The assessment was relaunched in 2026 so any completion from 2025 requires a redo. OA results and feedback report come instantly upon completion."},
@@ -618,11 +579,11 @@ var programs = [
     sector:"Engineering",
     location:"Perth / Brisbane / Various sites",
     status:"open",
-    closes:"10 Apr 2026",
+    closes:"",
     abbr:"BH",
     bg:"#f0ebe8",
     color:"#6b4226",
-    submissions:76,
+    submissions:0,
     responseRate:74,
     interviewRate:28,
     offerRate:9,
@@ -647,11 +608,7 @@ var programs = [
       {q:"How would you improve efficiency on a process or system that is not performing at full capacity?",type:"Technical",stage:"Engagement Centre",votes:88},
       {q:"Tell me about a time you worked in a diverse team under pressure. What was your role and what was the outcome?",type:"Behavioural",stage:"Engagement Centre",votes:76}
     ],
-    feed:[
-      {who:"UWA \u00b7 Mining Eng \u00b7 WAM 72",stage:"invite",stageLabel:"Engagement Centre invite",time:"1d ago",body:"Engagement Centre invite for Perth. Full day. BHP calls it Engagement Centre not assessment centre \u2014 different vibe. Overview from BHP employees first, then 1-on-1 interview with a line leader, then a group activity. Safety questions are non-negotiable, prepare a specific example.",likes:24,metoo:8},
-      {who:"Curtin \u00b7 Chemical Eng \u00b7 WAM 68",stage:"waiting",stageLabel:"Still waiting",time:"3d ago",body:"Finished the online assessment. 6 video questions, 4 re-records each, 180 seconds per answer. Three cognitive games included. Based on last year's Whirlpool thread, expect about 6 weeks of silence after the OA before hearing about the Engagement Centre.",likes:19,metoo:34},
-      {who:"UNSW \u00b7 Mechanical Eng \u00b7 WAM 74",stage:"offer",stageLabel:"Offer received",time:"1w ago",body:"Offer as grad process engineer. Permanent from day one. Relocation package included. They are flexible on accommodation support if you push back \u2014 worth negotiating. Engagement Centre was genuinely interesting, not an interrogation. The BHP team wanted it to feel like a real conversation.",likes:38,metoo:0}
-    ],
+    feed:[],
     reviews:[
       {who:"Mining Eng grad \u00b7 UWA \u00b7 2025",stars:5,text:"BHP grad program is one of the best in resources. Application asks for resume only \u2014 no transcript, no cover letter. Online assessment has 6 video questions (4 re-record attempts, 180 seconds each) plus 3 cognitive games. Engagement Centre was relaxed and genuine. Safety questions are non-negotiable \u2014 prepare a real, specific example."},
       {who:"Glassdoor \u00b7 Perth \u00b7 2025",stars:3,text:"Interview process was thorough \u2014 three interviews in total. Initial tests first, then a group interview, then a final 1-on-1. The online video questions felt like an interrogation compared to a normal face-to-face. Questions about safety were the most important to answer well. Average hiring time is 74 days from application."},
@@ -665,11 +622,11 @@ var programs = [
     sector:"Law",
     location:"Sydney / Melbourne / Perth",
     status:"open",
-    closes:"Jul 2026 (clerkship round)",
+    closes:"",
     abbr:"KW",
     bg:"#f5f3ee",
     color:"#2a5a3b",
-    submissions:52,
+    submissions:0,
     responseRate:82,
     interviewRate:35,
     offerRate:12,
@@ -693,11 +650,7 @@ var programs = [
       {q:"Tell me about your personal interests outside of law and study.",type:"Motivational",stage:"First Interview",votes:76},
       {q:"Walk me through an experience from your CV that you are most proud of.",type:"Behavioural",stage:"First Interview",votes:64}
     ],
-    feed:[
-      {who:"USYD \u00b7 LLB \u00b7 WAM 80",stage:"offer",stageLabel:"Graduate offer",time:"6h ago",body:"Graduate offer confirmed after completing a clerkship here last summer. In NSW the graduate offer almost always comes from the clerkship cohort, so if you want a grad role at KWM, the clerkship is your entry point. Partner interview was an open conversation not a formal behavioural format.",likes:33,metoo:0},
-      {who:"Melbourne \u00b7 JD \u00b7 WAM 77",stage:"invite",stageLabel:"First interview invite",time:"2d ago",body:"First interview booked. Glassdoor confirms it is very conversational and based on your CV rather than standard STAR behavioural questions. Prepare well on why KWM specifically and have a commercial awareness angle ready for the hypothetical scenario.",likes:11,metoo:4},
-      {who:"UNSW \u00b7 Law/Commerce \u00b7 WAM 75",stage:"reject",stageLabel:"Rejected at application",time:"1w ago",body:"Rejected at application stage. My WAM was 73 which I think was below their informal threshold. Also did not have a clerkship at a top-tier firm. Both seem to be significant filters before you even get to interview.",likes:28,metoo:14}
-    ],
+    feed:[],
     reviews:[
       {who:"LLB grad \u00b7 USYD \u00b7 2025",stars:5,text:"Extremely professional process. Both interviews were an open conversation focused on getting to know me and my interests, not just standard behavioural STAR questions. Clerkship experience at KWM was effectively required \u2014 nearly all grads in the cohort had clerked here first."},
       {who:"Glassdoor \u00b7 2025",stars:4,text:"Very straightforward and welcoming. Interviewed by one HR member and one senior lawyer. Most questions revolved around CV experiences. One hypothetical legal scenario \u2014 they did not expect a correct answer, just structured thinking. Partner round was more substantive but still relaxed."},
@@ -711,11 +664,11 @@ var programs = [
     sector:"Law",
     location:"Sydney / Melbourne / Brisbane / Perth",
     status:"open",
-    closes:"Jul 2026 (clerkship round)",
+    closes:"",
     abbr:"AL",
     bg:"#e8edf5",
     color:"#2a4a7a",
-    submissions:44,
+    submissions:0,
     responseRate:79,
     interviewRate:32,
     offerRate:11,
@@ -739,11 +692,7 @@ var programs = [
       {q:"Tell me about an experience where you had to work through a complex or ambiguous problem.",type:"Behavioural",stage:"First Interview",votes:77},
       {q:"What do you think will be the biggest challenges facing commercial law firms in the next five years?",type:"Technical",stage:"Partner Interview",votes:62}
     ],
-    feed:[
-      {who:"USYD \u00b7 LLB \u00b7 WAM 79",stage:"invite",stageLabel:"Interview invite",time:"3d ago",body:"First round interview booked for next week. Allens runs a cocktail evening before interviews where you meet current lawyers \u2014 treat it seriously, it is informally assessed. Research recent Allens deals before going, especially in your preferred practice area.",likes:21,metoo:5},
-      {who:"Melbourne \u00b7 JD \u00b7 WAM 76",stage:"offer",stageLabel:"Clerkship offer",time:"5d ago",body:"Clerkship offer came through on offer morning. Called at 9:15am. Had about 30 minutes to decide before accepting. The partner interview asked about a specific recent deal \u2014 know one Allens transaction in your target practice area in detail.",likes:44,metoo:0},
-      {who:"UNSW \u00b7 Law/Commerce \u00b7 WAM 74",stage:"reject",stageLabel:"Rejected at interview",time:"1w ago",body:"Got to first interview, did not progress to partner round. No feedback provided. My commercial awareness question was weak \u2014 I knew the deal I mentioned but could not articulate why it was strategically interesting for the client.",likes:29,metoo:11}
-    ],
+    feed:[],
     reviews:[
       {who:"LLB grad \u00b7 USYD \u00b7 2025",stars:5,text:"Allens process was well-run from start to finish. Cocktail evening before first interviews was worth attending \u2014 you meet current lawyers who feed back informally. Cover letter needs to be genuinely tailored, not a template. Partner interview focused heavily on commercial awareness and a specific recent deal."},
       {who:"JD grad \u00b7 Melbourne \u00b7 2024",stars:4,text:"Straightforward process. First interview covered CV and motivation questions. Partner interview was more commercial and substantive \u2014 asked about a current transaction and the strategic rationale from the client perspective. Reference check came quickly after the partner round."}
@@ -756,11 +705,11 @@ var programs = [
     sector:"Government",
     location:"Canberra / Sydney / Melbourne",
     status:"open",
-    closes:"7 Apr 2026",
+    closes:"",
     abbr:"TR",
     bg:"#e8f0eb",
     color:"#2a5a3b",
-    submissions:41,
+    submissions:0,
     responseRate:88,
     interviewRate:40,
     offerRate:18,
@@ -785,11 +734,7 @@ var programs = [
       {q:"How would your degree and studies leave you well-positioned to work as a Treasury graduate?",type:"Motivational",stage:"Panel Interview",votes:56},
       {q:"Describe a current economic issue in Australia. If you were advising government, what policy response would you recommend?",type:"Technical",stage:"Panel Interview",votes:88}
     ],
-    feed:[
-      {who:"ANU \u00b7 Economics \u00b7 WAM 84",stage:"offer",stageLabel:"Offer received",time:"3d ago",body:"Treasury Graduate Development Program offer confirmed. Total process was about 83 days. Key tip: the panel interview questions are provided 15 minutes before the interview starts. Use that time well \u2014 structure your responses. There is also a follow-up question for each pre-provided question that is not shown to you in advance.",likes:38,metoo:0},
-      {who:"Melbourne \u00b7 Economics/Finance \u00b7 WAM 78",stage:"invite",stageLabel:"Interview invite",time:"1w ago",body:"Interview invite for Economist Stream. 30 minutes via Teams. Important: sign OUT of your personal Teams account before joining or you cannot connect. Questions sent 15 minutes before. Prepare on housing, productivity, and interest rates \u2014 those are the policy areas most commonly asked about.",likes:29,metoo:6},
-      {who:"USYD \u00b7 PPE \u00b7 WAM 76",stage:"waiting",stageLabel:"Still waiting",time:"2w ago",body:"Submitted the written assessment and reference contacts but no word yet. Whirlpool thread suggests emails go out in waves. Also warning: do not switch windows during the online video assessment \u2014 the platform detects it and flags your application even if you are just trying to take notes.",likes:22,metoo:18}
-    ],
+    feed:[],
     reviews:[
       {who:"Economics grad \u00b7 ANU \u00b7 2025",stars:5,text:"Treasury is genuinely excellent for macro policy work. The panel interview is very formal \u2014 30 minutes via Teams, questions provided 15 minutes in advance, follow-up questions not shown. Prepare on specific policy areas in depth. Security clearance after offer takes time \u2014 start immediately when forms arrive."},
       {who:"Prosple \u00b7 Various \u00b7 2025",stars:4,text:"Economist Stream asked a combination of economic and behavioural questions. Economics questions were based on current policy issues including COVID, housing, and trade-offs in fiscal policy. 4 questions total in the interview. Be informed about current economic events and come with a specific policy area you are ready to defend in depth."},
@@ -810,12 +755,16 @@ function renderCards(list) {
       '<div class="pc-top"><div class="pc-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
       '<div><div class="pc-title">' + p.company + '</div><div class="pc-role">' + p.role + '</div></div></div>' +
       '<div class="pc-stats">' +
-        '<div class="pc-stat"><span class="pc-val">' + p.responseRate + '%</span><div class="pc-label">response rate</div></div>' +
-        '<div class="pc-stat"><span class="pc-val">' + p.avgDays + 'd</span><div class="pc-label">avg response</div></div>' +
-        '<div class="pc-stat"><span class="pc-val">' + p.offerRate + '%</span><div class="pc-label">offer rate</div></div>' +
+        (p.submissions >= 10 ?
+          '<div class="pc-stat"><span class="pc-val">' + p.responseRate + '%</span><div class="pc-label">response rate</div></div>' +
+          '<div class="pc-stat"><span class="pc-val">' + p.avgDays + 'd</span><div class="pc-label">avg response</div></div>' +
+          '<div class="pc-stat"><span class="pc-val">' + p.offerRate + '%</span><div class="pc-label">offer rate</div></div>'
+        :
+          '<div class="pc-stat" style="grid-column:span 3;text-align:left;padding:.35rem .5rem"><span style="font-size:11.5px;color:var(--muted)">Stats will appear once enough people share their experience.</span></div>'
+        ) +
       '</div>' +
       '<div class="pc-footer"><div class="pc-tags"><span class="pc-tag">' + p.sector + '</span><span class="pc-tag">' + p.location + '</span></div>' +
-      '<span class="pc-activity">' + p.submissions + ' submissions</span></div></div>';
+      '<span class="pc-activity" style="color:var(--muted2)">' + (p.submissions > 0 ? p.submissions + ' submissions' : 'No submissions yet') + '</span></div></div>';
   }).join("");
 }
 
@@ -861,18 +810,31 @@ function renderProgramPage(p) {
   document.getElementById("ppHeader").innerHTML =
     '<div class="pph-top"><div class="pph-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
     '<div><div class="pph-name">' + p.company + '</div><div class="pph-sub">' + p.role + ' \u00b7 ' + p.location + '</div></div></div>' +
-    '<div class="pph-tags"><span class="pph-tag" style="color:var(--accent);border-color:var(--accent)">\uD83D\uDFE2 Open \u00b7 closes ' + p.closes + '</span>' +
-    '<span class="pph-tag">' + p.submissions + ' submissions</span><span class="pph-tag">' + p.salary + '</span><span class="pph-tag">' + p.sector + '</span></div>';
+    '<div class="pph-tags"><span class="pph-tag" style="color:var(--accent);border-color:var(--accent)">\uD83D\uDFE2 Applications open — check careers page</span>' +
+    '<span class="pph-tag">' + (p.submissions > 0 ? p.submissions + ' submissions' : 'No submissions yet') + '</span><span class="pph-tag">' + p.salary + '</span><span class="pph-tag">' + p.sector + '</span></div>';
 
-  document.getElementById("ppStats").innerHTML =
-    '<div class="stat-card"><span class="stat-val">' + p.responseRate + '%</span><div class="stat-label">Response rate</div></div>' +
-    '<div class="stat-card"><span class="stat-val">' + p.interviewRate + '%</span><div class="stat-label">Interview rate</div></div>' +
-    '<div class="stat-card"><span class="stat-val">' + p.offerRate + '%</span><div class="stat-label">Offer rate</div></div>' +
-    '<div class="stat-card"><span class="stat-val">' + p.avgDays + 'd</span><div class="stat-label">Avg. days to response</div></div>';
+  var statsHTML;
+  if (p.submissions >= 10) {
+    statsHTML =
+      '<div class="stat-card"><span class="stat-val">' + p.responseRate + '%</span><div class="stat-label">Response rate</div></div>' +
+      '<div class="stat-card"><span class="stat-val">' + p.interviewRate + '%</span><div class="stat-label">Interview rate</div></div>' +
+      '<div class="stat-card"><span class="stat-val">' + p.offerRate + '%</span><div class="stat-label">Offer rate</div></div>' +
+      '<div class="stat-card"><span class="stat-val">' + p.avgDays + 'd</span><div class="stat-label">Avg. days to response</div></div>';
+  } else {
+    statsHTML = '<div style="grid-column:span 4;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;font-size:13px;color:var(--muted)">' +
+      'Stats like response rate and offer rate will appear here once enough people share their experience with this program. <span style="color:var(--accent);cursor:pointer" onclick="document.querySelector(\'textarea\').focus()">Add yours \u2192</span></div>';
+  }
+  document.getElementById("ppStats").innerHTML = statsHTML;
 
   var feedHTML = '<div class="post-box"><div class="pb-inner"><div class="avatar">you</div>' +
     '<textarea class="post-input" placeholder="What happened with your ' + p.company + ' application? Stage update, tip, question\u2026" rows="1" onfocus="this.rows=3" onblur="if(!this.value)this.rows=1"></textarea></div>' +
     '<div class="pb-footer"><span class="pb-hint">\uD83D\uDD12 Posted anonymously</span><button class="pb-submit" onclick="submitFeedPost(this)">Post</button></div></div>';
+  if (p.feed.length === 0) {
+    feedHTML += '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted)">' +
+      '<div style="font-size:1.5rem;margin-bottom:.6rem">\u270D\uFE0F</div>' +
+      '<div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:.3rem">No updates yet</div>' +
+      '<div style="font-size:12.5px">Be the first to share your experience with this program.</div></div>';
+  }
   feedHTML += p.feed.map(function(f) {
     return '<div class="feed-item"><div class="fi-top">' +
       '<div class="avatar" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
