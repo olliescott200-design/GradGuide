@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GradGuide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f3ee;--surface:#faf9f6;--surface2:#ffffff;--border:#e2dfd8;--border2:#cdc9c0;
+  --text:#1a1916;--muted:#888680;--muted2:#b5b2aa;--accent:#2a5a3b;--accent-light:#e8f0eb;
+  --amber:#c17d2a;--amber-light:#fdf3e3;--red:#b54040;--red-light:#fdeaea;
+  --blue:#2a4a7a;--blue-light:#e8edf5;
+  --mono:'DM Mono',monospace;--serif:'Instrument Serif',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--serif);font-size:1.25rem;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:.5rem;cursor:pointer}
+.logo-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.nav-link{font-size:13px;color:var(--muted);cursor:pointer;transition:color .15s;background:none;border:none;font-family:var(--sans);padding:0}
+.nav-link:hover{color:var(--text)}
+.post-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.4rem 1rem;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.post-btn:hover{opacity:.88}
+.season-banner{background:var(--accent);color:#fff;padding:.5rem 2rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;font-size:12.5px}
+.season-pill{display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.15);border-radius:100px;padding:.18rem .65rem;font-size:12px}
+.pulse{width:6px;height:6px;background:#6ee7b7;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;display:inline-block}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+#home{max-width:1080px;margin:0 auto;padding:2rem}
+.home-header{margin-bottom:2rem}
+.home-header h1{font-family:var(--serif);font-size:2rem;font-style:italic;font-weight:400;letter-spacing:-.02em;margin-bottom:.35rem}
+.home-header p{color:var(--muted);font-size:14px;max-width:480px}
+.search-row{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:340px}
+.search-wrap input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--sans);font-size:13.5px;padding:.55rem .85rem .55rem 2.2rem;outline:none}
+.search-wrap input::placeholder{color:var(--muted2)}
+.search-icon{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted2);font-size:14px;pointer-events:none}
+.pill{padding:.3rem .85rem;border-radius:100px;border:1px solid var(--border2);font-size:12.5px;color:var(--muted);cursor:pointer;background:transparent;font-family:var(--sans);transition:all .12s;white-space:nowrap}
+.pill:hover{border-color:var(--text);color:var(--text)}
+.pill.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.75rem}
+.prog-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.1rem;cursor:pointer;transition:border-color .15s,transform .12s;position:relative;overflow:hidden}
+.prog-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.pc-top{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:.85rem}
+.pc-logo{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:500;flex-shrink:0}
+.pc-title{font-size:14px;font-weight:500;margin-bottom:.1rem;line-height:1.3}
+.pc-role{font-size:12px;color:var(--muted);line-height:1.35}
+.pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.85rem}
+.pc-stat{background:var(--bg);border-radius:6px;padding:.45rem .5rem;text-align:center}
+.pc-val{font-family:var(--mono);font-size:13px;font-weight:500;display:block;color:var(--text)}
+.pc-label{font-size:10px;color:var(--muted2);margin-top:.1rem}
+.pc-footer{display:flex;align-items:center;justify-content:space-between}
+.pc-tags{display:flex;gap:.3rem;flex-wrap:wrap}
+.pc-tag{font-size:11px;padding:.12rem .5rem;border-radius:100px;border:1px solid var(--border);color:var(--muted)}
+.pc-activity{font-family:var(--mono);font-size:10.5px;color:var(--muted2)}
+.hot-badge{position:absolute;top:.75rem;right:.75rem;font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;background:var(--accent-light);color:var(--accent);border-radius:3px;padding:.1rem .45rem}
+#program-page{max-width:1080px;margin:0 auto;padding:2rem;display:none}
+.back-btn{display:inline-flex;align-items:center;gap:.4rem;font-size:13px;color:var(--muted);cursor:pointer;margin-bottom:1.25rem;background:none;border:none;font-family:var(--sans);padding:0;transition:color .15s}
+.back-btn:hover{color:var(--text)}
+.prog-page-header{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem}
+.pph-top{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.pph-logo{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:500;flex-shrink:0}
+.pph-name{font-size:18px;font-weight:500;margin-bottom:.15rem}
+.pph-sub{font-size:13px;color:var(--muted)}
+.pph-tags{display:flex;gap:.4rem;flex-wrap:wrap}
+.pph-tag{font-size:11.5px;padding:.18rem .6rem;border-radius:100px;border:1px solid var(--border);color:var(--muted)}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1rem}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.85rem;text-align:center}
+.stat-val{font-family:var(--mono);font-size:1.3rem;font-weight:500;display:block;color:var(--text)}
+.stat-label{font-size:10.5px;color:var(--muted);margin-top:.2rem}
+.prog-layout{display:grid;grid-template-columns:1fr 300px;gap:1rem;align-items:start}
+.tabs{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:10px 10px 0 0;padding:0 1rem;overflow-x:auto}
+.tab-btn{padding:.7rem 1rem;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans);white-space:nowrap}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--text);border-bottom-color:var(--accent);font-weight:500}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.tab-content{background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:1.1rem}
+.post-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.9rem;margin-bottom:.6rem}
+.pb-inner{display:flex;gap:.65rem;align-items:flex-start;margin-bottom:.65rem}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);font-weight:500;flex-shrink:0;font-family:var(--mono)}
+.post-input{flex:1;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;padding:.55rem .75rem;outline:none;resize:none;line-height:1.5;width:100%}
+.post-input:focus{border-color:var(--border2)}
+.post-input::placeholder{color:var(--muted2)}
+.pb-footer{display:flex;justify-content:space-between;align-items:center}
+.pb-hint{font-size:11.5px;color:var(--muted2)}
+.pb-submit{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:.35rem .9rem;font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer}
+.feed-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.95rem;margin-bottom:.5rem;transition:border-color .15s}
+.feed-item:hover{border-color:var(--border2)}
+.fi-top{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:.55rem}
+.fi-meta{flex:1;display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
+.fi-who{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.fi-stage{font-size:11.5px;padding:.1rem .5rem;border-radius:100px}
+.stage-offer{background:#e6f5ec;color:#1e6b3a}
+.stage-invite{background:var(--blue-light);color:var(--blue)}
+.stage-reject{background:var(--red-light);color:var(--red)}
+.stage-waiting{background:var(--amber-light);color:var(--amber)}
+.stage-update{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.fi-time{font-family:var(--mono);font-size:10.5px;color:var(--muted2);margin-left:auto;white-space:nowrap}
+.fi-body{font-size:13px;color:var(--text);line-height:1.55;padding-left:2.35rem}
+.fi-footer{display:flex;align-items:center;gap:.85rem;padding-left:2.35rem;margin-top:.55rem;padding-top:.55rem;border-top:1px solid var(--border)}
+.fi-action{display:flex;align-items:center;gap:.25rem;font-size:12px;color:var(--muted);cursor:pointer;transition:color .12s;background:none;border:none;font-family:var(--sans);padding:0}
+.fi-action:hover{color:var(--text)}
+.fi-action.liked{color:var(--accent)}
+.me-too{display:flex;align-items:center;gap:.3rem;font-size:12px;color:var(--muted);cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:100px;padding:.15rem .65rem;font-family:var(--sans);margin-left:auto;transition:all .12s}
+.me-too:hover,.me-too.active{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.bar-row{display:flex;align-items:center;gap:.55rem;margin-bottom:.5rem}
+.bar-label{font-size:12px;color:var(--text);width:90px;flex-shrink:0}
+.bar-track{flex:1;height:5px;background:var(--bg);border-radius:100px;overflow:hidden}
+.bar-fill{height:100%;border-radius:100px;background:var(--accent);transition:width 1s cubic-bezier(.16,1,.3,1)}
+.bar-fill.amber{background:var(--amber)}
+.bar-pct{font-family:var(--mono);font-size:11px;color:var(--muted);width:28px;text-align:right}
+.section-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem}
+.tl-row{display:flex;align-items:flex-start;gap:.75rem;position:relative;padding-bottom:.85rem}
+.tl-row:not(:last-child)::after{content:'';position:absolute;left:9px;top:20px;bottom:0;width:1px;background:var(--border)}
+.tl-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;z-index:1}
+.tl-dot.now{border-color:var(--accent);background:var(--accent-light)}
+.tl-stage{font-size:13px;font-weight:500;margin-bottom:.1rem}
+.tl-timing{font-family:var(--mono);font-size:11px;color:var(--accent)}
+.tl-sub{font-size:12px;color:var(--muted);margin-top:.15rem;line-height:1.45}
+.q-item{padding:.65rem 0;border-bottom:1px solid var(--border)}
+.q-item:last-child{border-bottom:none}
+.q-text{font-size:13px;color:var(--text);margin-bottom:.3rem;line-height:1.45}
+.q-row{display:flex;align-items:center;gap:.3rem}
+.q-tag{font-size:10.5px;padding:.1rem .45rem;border-radius:3px;background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.q-votes{font-family:var(--mono);font-size:11px;color:var(--muted2);margin-left:auto;cursor:pointer;background:none;border:none}
+.q-votes:hover{color:var(--accent)}
+.review-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.85rem;margin-bottom:.6rem}
+.review-header{display:flex;justify-content:space-between;margin-bottom:.4rem}
+.review-who{font-size:12.5px;font-weight:500}
+.review-stars{color:var(--amber);font-size:12px}
+.review-text{font-size:13px;color:var(--muted);line-height:1.55}
+.widget{background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:.75rem;overflow:hidden}
+.widget-head{padding:.65rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.widget-title{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.widget-body{padding:.85rem 1rem}
+.open-row{display:flex;align-items:center;gap:.55rem;padding:.45rem 0;border-bottom:1px solid var(--border)}
+.open-row:last-child{border-bottom:none}
+.open-dot-sm{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.open-co{font-size:12.5px;flex:1}
+.open-closes{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.modal-overlay{position:fixed;inset:0;background:rgba(26,25,22,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;width:100%;max-width:500px;padding:1.4rem;animation:fadeIn .2s ease}
+.modal-title{font-family:var(--serif);font-size:1.2rem;font-style:italic;margin-bottom:.85rem}
+.anon-bar{display:flex;align-items:center;gap:.45rem;background:var(--accent-light);border-radius:6px;padding:.5rem .7rem;margin-bottom:.9rem;font-size:12px;color:var(--accent)}
+.mf{margin-bottom:.75rem}
+.ml{font-size:11.5px;color:var(--muted);margin-bottom:.3rem}
+.mi,.ms,.mta{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13.5px;padding:.5rem .75rem;outline:none;-webkit-appearance:none}
+.mta{resize:vertical;min-height:80px}
+.m2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.modal-footer{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1rem;padding-top:.9rem;border-top:1px solid var(--border)}
+.btn-cancel{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:6px;padding:.48rem .95rem;font-family:var(--sans);font-size:13px;cursor:pointer}
+.btn-cancel:hover{color:var(--text);border-color:var(--text)}
+.btn-post{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.48rem 1.2rem;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer}
+.btn-post:hover{opacity:.88}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:100px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="goHome()"><span class="logo-dot"></span>GradGuide</div>
+  <div class="nav-right">
+    <button class="nav-link">2026 season</button>
+    <button class="nav-link">All programs</button>
+    <button class="post-btn" onclick="openModal()">+ Post update</button>
+  </div>
+</nav>
+
+<div class="season-banner">
+  <span class="season-pill"><span class="pulse"></span> 2026 grad season open</span>
+  <span>Applications close <strong>Feb&#8211;Mar 2026</strong> &middot; <strong>347 grads</strong> posting live</span>
+</div>
+
+<div id="home">
+  <div class="home-header">
+    <h1>Find your program.</h1>
+    <p>Real data from real grads &#8212; response rates, interview questions, who gets hired, and what&#8217;s happening right now.</p>
+  </div>
+  <div class="search-row">
+    <div class="search-wrap">
+      <span class="search-icon">&#x2315;</span>
+      <input type="text" placeholder="Search company or role&#8230;" oninput="filterCards(this.value)">
+    </div>
+    <button class="pill on" onclick="filterSector('All',this)">All</button>
+    <button class="pill" onclick="filterSector('Finance',this)">Finance</button>
+    <button class="pill" onclick="filterSector('Consulting',this)">Consulting</button>
+    <button class="pill" onclick="filterSector('Law',this)">Law</button>
+    <button class="pill" onclick="filterSector('Tech',this)">Tech</button>
+    <button class="pill" onclick="filterSector('Engineering',this)">Engineering</button>
+    <button class="pill" onclick="filterSector('Government',this)">Government</button>
+  </div>
+  <div class="prog-grid" id="progGrid"></div>
+</div>
+
+<div id="program-page">
+  <button class="back-btn" onclick="goHome()">&#8592; All programs</button>
+  <div class="prog-page-header" id="ppHeader"></div>
+  <div class="stat-row" id="ppStats"></div>
+  <div class="prog-layout">
+    <div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('feed',this)">Live feed</button>
+        <button class="tab-btn" onclick="switchTab('overview',this)">Uni &amp; degree data</button>
+        <button class="tab-btn" onclick="switchTab('process',this)">Process</button>
+        <button class="tab-btn" onclick="switchTab('questions',this)">Questions</button>
+        <button class="tab-btn" onclick="switchTab('reviews',this)">Reviews</button>
+      </div>
+      <div class="tab-content">
+        <div id="tab-feed" class="tab-panel active"></div>
+        <div id="tab-overview" class="tab-panel"></div>
+        <div id="tab-process" class="tab-panel"></div>
+        <div id="tab-questions" class="tab-panel"></div>
+        <div id="tab-reviews" class="tab-panel"></div>
+      </div>
+    </div>
+    <div>
+      <div class="widget">
+        <div class="widget-head"><span class="widget-title">Closing soon</span></div>
+        <div class="widget-body">
+          <div class="open-row"><div class="open-dot-sm"></div><span class="open-co">Goldman Sachs IBD</span><span class="open-closes">31 Jan</span></div>
+          <div class="open-row"><div class="open-dot-sm"></div><span class="open-co">McKinsey BA</span><span class="open-closes">15 Feb</span></div>
+          <div class="open-row"><div class="open-dot-sm"></div><span class="open-co">Google APM</span><span class="open-closes">28 Feb</span></div>
+          <div class="open-row"><div class="open-dot-sm"></div><span class="open-co">King &amp; Wood Mallesons</span><span class="open-closes">5 Mar</span></div>
+          <div class="open-row"><div class="open-dot-sm" style="background:var(--amber)"></div><span class="open-co">BHP Grad Engineer</span><span class="open-closes" style="color:var(--amber)">14 Mar</span></div>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="widget-head"><span class="widget-title">Today <span class="pulse"></span></span></div>
+        <div class="widget-body" style="display:flex;flex-direction:column;gap:.55rem">
+          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Updates posted</span><span style="font-family:var(--mono);font-size:13px">47</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Offers reported</span><span style="font-family:var(--mono);font-size:13px;color:var(--accent)">8</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Invites reported</span><span style="font-family:var(--mono);font-size:13px;color:var(--blue)">19</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:12.5px;color:var(--muted)">Rejections</span><span style="font-family:var(--mono);font-size:13px;color:var(--red)">11</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">Post an update</div>
+    <div class="anon-bar">&#128274; Posted anonymously &#8212; only your uni, degree, and WAM range are shown.</div>
+    <div class="m2">
+      <div class="mf"><div class="ml">Company</div>
+        <select class="ms">
+          <option>Goldman Sachs</option><option>McKinsey</option><option>PwC</option><option>Deloitte</option>
+          <option>CBA</option><option>ANZ</option><option>BHP</option><option>Treasury</option><option>Google</option><option>Other</option>
+        </select>
+      </div>
+      <div class="mf"><div class="ml">What happened?</div>
+        <select class="ms">
+          <option>Invite / progressed</option><option>Received offer</option><option>Still waiting</option>
+          <option>Rejected</option><option>Withdrew</option><option>Sharing info</option>
+        </select>
+      </div>
+    </div>
+    <div class="mf"><div class="ml">Tell people what happened</div>
+      <textarea class="mta" placeholder="What stage are you at? What was it like? Any tips for people behind you in the process..."></textarea>
+    </div>
+    <div class="mf">
+      <div class="ml">Your background <span style="color:var(--muted2)">(shown anonymously)</span></div>
+      <div class="m2" style="margin-top:.35rem">
+        <select class="ms"><option value="">University...</option><option>USYD</option><option>UNSW</option><option>Melbourne</option><option>ANU</option><option>UQ</option><option>Monash</option><option>Macquarie</option><option>Other</option></select>
+        <select class="ms"><option value="">WAM range...</option><option>65-69</option><option>70-74</option><option>75-79</option><option>80-84</option><option>85+</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-post" onclick="submitPost()">Post anonymously</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var programs = [
+  {
+    id:"goldman",
+    company:"Goldman Sachs",
+    role:"Graduate Analyst \u2014 Investment Banking",
+    sector:"Finance",
+    location:"Sydney",
+    status:"open",
+    closes:"31 Jan 2026",
+    abbr:"GS",
+    bg:"#e8f0eb",
+    color:"#2a5a3b",
+    submissions:84,
+    responseRate:58,
+    interviewRate:22,
+    offerRate:6,
+    avgDays:14,
+    activity:12,
+    salary:"$95\u2013110k",
+    topUnis:[{n:"USYD",p:28},{n:"UNSW",p:24},{n:"Melbourne",p:19},{n:"ANU",p:12},{n:"Monash",p:9}],
+    topDegrees:[{n:"Commerce/Finance",p:42},{n:"Economics",p:21},{n:"Eng+Commerce",p:18},{n:"Law/Commerce",p:11},{n:"Actuarial",p:8}],
+    process:[
+      {s:"Online Application",t:"Week 0",d:"Resume and cover letter. No formal WAM cutoff stated but target university skew is visible in hiring data. Finance society involvement and prior internship experience noted as differentiators. Explore Goldman Sachs event attendees may be fast-tracked directly to HireVue."},
+      {s:"HireVue Video Interview",t:"Week 2\u20133",d:"5\u20138 pre-recorded questions. 30 seconds to prepare, 2 minutes to answer each. IBD candidates report market and technical questions alongside behavioural. AI analysis of verbal and non-verbal cues is used alongside human review. The biggest filter in the process \u2014 roughly 60% of applicants are cut here. Some divisions include numerical reasoning.",now:true},
+      {s:"Superday",t:"Week 5\u20136",d:"Three 30-minute interviews with analysts, associates, or VPs. IBD superdays are market-focused with a mix of behavioural and technical (DCF basics, M&A, recent deals). 3\u20135 interviewers total. Typically conducted via Zoom in breakout rooms."},
+      {s:"Final Round",t:"Week 7\u20138",d:"Not universal \u2014 depends on division. Where it exists: panel with VP or MD. Reference checks begin at this stage."},
+      {s:"Offer",t:"Week 9\u201310",d:"Verbal offer then written. Background check required before start date."}
+    ],
+    questions:[
+      {q:"Walk me through a DCF valuation from scratch.",type:"Technical",stage:"Superday",votes:241},
+      {q:"Tell me about a time you worked under significant pressure. What was the situation and how did you manage it?",type:"Behavioural",stage:"HireVue",votes:188},
+      {q:"Why Goldman Sachs over the other bulge bracket banks?",type:"Motivational",stage:"Final round",votes:162},
+      {q:"What is happening in markets right now? Pick a stock you are following and pitch it.",type:"Technical",stage:"Superday",votes:134},
+      {q:"Describe a situation where you had to influence someone without having formal authority over them.",type:"Behavioural",stage:"HireVue",votes:97},
+      {q:"Tell me about a recent M&A deal that caught your attention. What do you think of the rationale?",type:"Technical",stage:"Superday",votes:88},
+      {q:"What do you expect from an investment banking graduate role day-to-day?",type:"Motivational",stage:"HireVue",votes:76},
+      {q:"Describe an obstacle you overcame and how you did it.",type:"Behavioural",stage:"HireVue",votes:71},
+      {q:"What would you do if a colleague shared confidential information and your manager wanted to know about it?",type:"Situational",stage:"Superday",votes:58},
+      {q:"Tell me something not on your resume that you are proud of.",type:"Motivational",stage:"Superday",votes:52}
+    ],
+    feed:[
+      {who:"UNSW \u00b7 Commerce/Finance \u00b7 WAM 78",stage:"invite",stageLabel:"Superday invite",time:"2h ago",body:"Just got the email. First round superday scheduled for next week. Applied early October so about 6 weeks from application to this point. HireVue had 6 questions, 2 min each, mix of behavioural and market questions. Felt more technical than I expected.",likes:12,metoo:8},
+      {who:"USYD \u00b7 Economics \u00b7 WAM 82",stage:"offer",stageLabel:"Offer received",time:"4h ago",body:"Verbal offer today for IBD Sydney. 10 weeks application to offer. Superday was three back-to-back 30-min sessions via Zoom. Interviewers asked about a deal I was following and walked through a basic DCF. Good luck to everyone still in the process.",likes:47,metoo:0},
+      {who:"Melbourne \u00b7 Commerce \u00b7 WAM 75",stage:"waiting",stageLabel:"Still waiting",time:"8h ago",body:"Completed the HireVue 3 weeks ago, nothing since. The AI scoring element is stressful not knowing what they are looking for. Anyone else still in limbo for IBD?",likes:31,metoo:19},
+      {who:"ANU \u00b7 Economics \u00b7 WAM 79",stage:"invite",stageLabel:"Superday invite",time:"1d ago",body:"Got the superday invite. First time going this far in any process. Preparing on DCF and recent M&A. Any tips on the Zoom format \u2014 do they run back to back with no break?",likes:18,metoo:6}
+    ],
+    reviews:[
+      {who:"Commerce grad \u00b7 USYD \u00b7 2025",stars:4,text:"Process was thorough but fair. HireVue was the hardest part \u2014 timed numerical reasoning with very little prep time. Superday was intense, two back-to-back 30-minute sessions, but interviewers were genuinely curious about how you think rather than testing memorised answers."},
+      {who:"Eng/Commerce \u00b7 UNSW \u00b7 2025",stars:5,text:"The Explore Goldman Sachs event was worth attending \u2014 my application moved directly to HireVue after. Superday was almost entirely behavioural for my division with one technical question. Two interviewers to one candidate in one session, one-on-one in the other."},
+      {who:"Economics grad \u00b7 ANU \u00b7 2024",stars:3,text:"Long process with very little communication between stages. No feedback after HireVue rejection. Waited 3 weeks after superday before hearing anything. The interviewers were great \u2014 HR communication was the weak point."}
+    ]
+  },
+  {
+    id:"mckinsey",
+    company:"McKinsey & Company",
+    role:"Business Analyst",
+    sector:"Consulting",
+    location:"Sydney / Melbourne",
+    status:"open",
+    closes:"15 Feb 2026",
+    abbr:"MK",
+    bg:"#e8edf5",
+    color:"#2a4a7a",
+    submissions:61,
+    responseRate:71,
+    interviewRate:18,
+    offerRate:5,
+    avgDays:10,
+    activity:9,
+    salary:"$90\u2013105k",
+    topUnis:[{n:"Melbourne",p:32},{n:"USYD",p:22},{n:"UNSW",p:18},{n:"ANU",p:14},{n:"UQ",p:9}],
+    topDegrees:[{n:"Commerce/Business",p:30},{n:"Engineering",p:27},{n:"Arts/Law",p:18},{n:"Science",p:15},{n:"Medicine",p:10}],
+    process:[
+      {s:"Application",t:"Week 0",d:"Resume upload only. No cover letter required. All degree backgrounds considered. Screen looks for narrative of increasing responsibility and measurable impact across experiences."},
+      {s:"McKinsey Solve Assessment",t:"Week 1\u20132",d:"Two digital games testing problem-solving and critical thinking. The format has been updated in recent years \u2014 check the McKinsey careers page for the current version as game names change. Widely reported pass rate is around 20% though McKinsey does not publish this figure. Takes approximately 60\u201370 minutes.",now:true},
+      {s:"First Round Interviews",t:"Week 3\u20135",d:"2\u20133 interviews of 45\u201360 minutes each. Every interview has a PEI segment (10\u201315 min) and a candidate-led case. PEI covers 4 dimensions: Leadership, Drive, Connection, and Growth (renamed mid-2025). Cases are candidate-led \u2014 you drive the structure and ask for data. Run by engagement managers or associate partners."},
+      {s:"Final Round Interviews",t:"Week 5\u20137",d:"2\u20133 partner-level interviews. Same PEI and case format but more emphasis on judgment and synthesis. PEI probes deeper on tradeoffs, ethics, and stakeholder management. Open-ended case prompts increase in ambiguity."},
+      {s:"Offer",t:"Week 5\u20138 total",d:"Offer within 1\u20132 days of final round decision. Full process typically 4\u20138 weeks. No base salary negotiation; sign-on discussed separately."}
+    ],
+    questions:[
+      {q:"Tell me about a time you led a team through a genuinely challenging situation. What specifically made it hard?",type:"PEI \u2014 Leadership",stage:"Interview",votes:208},
+      {q:"Describe a time you convinced someone to change their mind when they initially disagreed with you.",type:"PEI \u2014 Personal Impact",stage:"Interview",votes:187},
+      {q:"Our client is a supermarket chain experiencing declining margins. Where would you start?",type:"Case \u2014 Profitability",stage:"Interview",votes:312},
+      {q:"Estimate the number of piano tuners operating in Sydney.",type:"Case \u2014 Market sizing",stage:"Interview",votes:187},
+      {q:"A telehealth startup wants to enter the Australian market. How would you assess the opportunity?",type:"Case \u2014 Market entry",stage:"Interview",votes:144},
+      {q:"Tell me about your biggest personal impact \u2014 what specifically changed because of you?",type:"PEI \u2014 Drive",stage:"Interview",votes:161},
+      {q:"Describe a time you had to adapt quickly to a major unexpected change.",type:"PEI \u2014 Growth",stage:"Interview",votes:134},
+      {q:"Profits at our client dropped 15% year on year. Where do you start?",type:"Case \u2014 Profitability",stage:"Interview",votes:128},
+      {q:"When did you influence a senior stakeholder who initially disagreed with your recommendation?",type:"PEI \u2014 Personal Impact",stage:"Final round",votes:98}
+    ],
+    feed:[
+      {who:"Melbourne \u00b7 Science \u00b7 WAM 81",stage:"invite",stageLabel:"First round invite",time:"3h ago",body:"Got first round case interviews. Two slots next week. Studied cases for 6 weeks. The Solve assessment format has changed in recent years \u2014 older prep resources may be outdated. Check the McKinsey careers page for the current version before you prepare.",likes:22,metoo:11},
+      {who:"USYD \u00b7 Law \u00b7 WAM 77",stage:"reject",stageLabel:"Rejected",time:"1d ago",body:"Rejected after second round with no feedback. Process was well-run and communication was prompt throughout. The case difficulty jumps noticeably in the partner round \u2014 more open-ended and ambiguous. Would reapply.",likes:39,metoo:14},
+      {who:"ANU \u00b7 Commerce \u00b7 WAM 83",stage:"offer",stageLabel:"Offer received",time:"2d ago",body:"Got the call today. The PEI is weighted equally to the case \u2014 do not treat it as secondary. Have three concrete stories with real specificity. They will ask exactly what you said, how the other person responded, what you were thinking in that moment. Vague answers fail here.",likes:68,metoo:0}
+    ],
+    reviews:[
+      {who:"Science grad \u00b7 Melbourne \u00b7 2025",stars:5,text:"Best recruiting process I went through. Interviewers were sharp but respectful. The PEI goes much deeper than a standard behavioural interview \u2014 they will probe your initial answer for 10\u201315 minutes on a single story. Cases are candidate-led which I prefer."},
+      {who:"Law student \u00b7 USYD \u00b7 2025",stars:4,text:"Rejection after second round with no feedback. Process was well-organised and communication was prompt at every stage. Case difficulty increases significantly in round two. Partner-round cases are noticeably more ambiguous and open-ended."},
+      {who:"Commerce grad \u00b7 ANU \u00b7 2025",stars:5,text:"The PEI is where McKinsey differs most. Instead of 4\u20135 behavioural questions they ask one and drill into it for 10\u201315 minutes. They are checking whether the story is real, how you actually behaved, and what you understood about the situation. Vague answers fail."}
+    ]
+  },
+  {
+    id:"pwc",
+    company:"PwC Australia",
+    role:"Graduate Program \u2014 Assurance / Advisory / Tax / Technology",
+    sector:"Accounting",
+    location:"Sydney / Melbourne / Brisbane / Perth",
+    status:"open",
+    closes:"1 Mar 2026",
+    abbr:"PW",
+    bg:"#fdeaea",
+    color:"#b54040",
+    submissions:96,
+    responseRate:79,
+    interviewRate:33,
+    offerRate:11,
+    avgDays:9,
+    activity:7,
+    salary:"$72\u201382k",
+    topUnis:[{n:"USYD",p:28},{n:"UNSW",p:26},{n:"Melbourne",p:20},{n:"Macquarie",p:12},{n:"UTS",p:9}],
+    topDegrees:[{n:"Commerce/Accounting",p:48},{n:"Commerce/Finance",p:22},{n:"Business",p:18},{n:"Economics",p:8},{n:"Other",p:4}],
+    process:[
+      {s:"Application",t:"Week 0",d:"Resume and transcript. One application per cycle \u2014 choose your line of service carefully. Must be graduating 2023\u20132026. Full Australian working rights required. PwC cannot sponsor visas for this program. No cover letter required."},
+      {s:"Online Assessments",t:"Week 1",d:"4 assessments covering behaviours, skills, and emotional intelligence. Takes approximately 50 minutes. 48 hours to complete once received. Uses SHL platform (same as KPMG). Includes numerical, verbal, inductive reasoning and personality/SJT. Some applicants also report an Arctic Shores game-based assessment.",now:true},
+      {s:"Digital Interview (HireVue)",t:"Week 2\u20133",d:"Confirmed by multiple Whirlpool participants: just ONE question in the 2025 cycle, not the 2\u20134 that prep sites suggest. Question focuses on experience and motivations. Two takes allowed. 48 hours to complete. Immediately followed by team preference selection."},
+      {s:"Assessment Centre",t:"Week 4\u20138 (varies by city)",d:"Full day. Morning: group case study mirroring real PwC work. Afternoon: individual interview in a relaxed cafe-style environment with a senior and junior team member. Deals/Consulting streams include a case study component in the individual interview. City dates vary significantly \u2014 Sydney typically last."},
+      {s:"Offer",t:"Week 6\u20138",d:"Verbal then written offer. Start date typically January or February. Average 29 days application to offer. CA qualification support from day one."}
+    ],
+    questions:[
+      {q:"Tell me about a time you had to deliver bad news to a stakeholder. How did you handle it?",type:"Behavioural",stage:"Assessment Centre",votes:187},
+      {q:"Why PwC over the other Big 4?",type:"Motivational",stage:"Interview",votes:156},
+      {q:"Give me an example of a time you had to manage competing priorities under time pressure.",type:"Behavioural",stage:"Digital Interview",votes:134},
+      {q:"Tell me about a time you used analytical skills to solve a complex problem.",type:"Behavioural",stage:"Interview",votes:118},
+      {q:"How do your personal values align with PwC values of integrity, excellence, collaboration, and service?",type:"Motivational",stage:"Interview",votes:97},
+      {q:"Describe a time you took initiative on a project beyond what was expected of you.",type:"Behavioural",stage:"Interview",votes:64}
+    ],
+    feed:[
+      {who:"USYD \u00b7 Commerce/Accounting \u00b7 WAM 76",stage:"invite",stageLabel:"AC invite",time:"7h ago",body:"Assessment centre invite for Assurance stream. Sydney, 22 May. For anyone wondering \u2014 the digital interview really is just one question. Not 2\u20134 like most prep sites say. Focus on a clear answer about your experience and motivations.",likes:19,metoo:6},
+      {who:"Macquarie \u00b7 Commerce \u00b7 WAM 73",stage:"offer",stageLabel:"Offer received",time:"2d ago",body:"Got the offer for Melbourne Assurance. Applied to 12 firms and this is the first offer. Process was 29 days from application. The group case in the AC morning was the most realistic and engaging part of any process I went through.",likes:52,metoo:0},
+      {who:"Melbourne \u00b7 Commerce \u00b7 WAM 71",stage:"reject",stageLabel:"Rejected at HireVue",time:"3d ago",body:"Did not progress past the digital interview. Communication was poor \u2014 rejection came 3 weeks after with no update in between. The online assessments were fine but unclear what the HireVue was actually assessing on a single question.",likes:28,metoo:17}
+    ],
+    reviews:[
+      {who:"Commerce grad \u00b7 UNSW \u00b7 2025",stars:4,text:"Good communication throughout. Heard back within a week at every stage. Digital interview felt awkward but the AC was well-structured. Group case in the morning was genuinely interesting \u2014 felt like actual consulting work. CA program support from day one is the real draw."},
+      {who:"Multiple applicants \u00b7 Whirlpool 2025",stars:3,text:"Whirlpool thread confirms digital interview is one question in 2025 cycle. AC dates: Adelaide/Canberra May 7, Brisbane/Perth May 9\u201310, Melbourne May 14\u201315, Sydney May 22\u201323 (2024 cycle for reference). Rejection batch emails went out approximately 3 weeks after AC with no intermediate communication."}
+    ]
+  },
+  {
+    id:"cba",
+    company:"Commonwealth Bank",
+    role:"Graduate Program \u2014 Technology / Finance / Risk / Data & Analytics",
+    sector:"Finance",
+    location:"Sydney",
+    status:"open",
+    closes:"20 Feb 2026",
+    abbr:"CB",
+    bg:"#e8edf5",
+    color:"#2a4a7a",
+    submissions:112,
+    responseRate:74,
+    interviewRate:28,
+    offerRate:9,
+    avgDays:12,
+    activity:14,
+    salary:"$80\u201395k",
+    topUnis:[{n:"UNSW",p:30},{n:"USYD",p:24},{n:"UTS",p:18},{n:"Macquarie",p:14},{n:"Melbourne",p:8}],
+    topDegrees:[{n:"Computer Science",p:40},{n:"Software Eng",p:28},{n:"Info Systems",p:18},{n:"Data Science",p:10},{n:"Other",p:4}],
+    process:[
+      {s:"Application",t:"Week 0",d:"Online via CBA careers. Select division preference at application stage. Highly competitive program. CV upload only."},
+      {s:"Psychometric Assessment (SHL)",t:"Week 1\u20132",d:"Three SHL assessments: numerical reasoning, inductive/patterns reasoning, and personality/situational judgement. Also includes an emotional intelligence component. 48 hours to complete. Contact SHL support via their website for technical issues.",now:true},
+      {s:"HireVue Video Interview",t:"Week 3\u20134",d:"Approximately 7 questions total. Covers behavioural topics, motivations, and industry awareness including market trends. Standard behavioural format. Results for March applicants typically not released until late March. Contact HireVue Candidate Help Centre for technical issues."},
+      {s:"Assessment Centre",t:"Week 6\u20138",d:"Full day in Sydney. Two components: (1) formal interview with 2 assessors at the start of the day; (2) group task with 4\u20135 other candidates assessing collaboration and communication. Some applicants report a guided tour and networking session."},
+      {s:"Offer",t:"Week 9\u201310",d:"Rotational 2-year program across divisions. Average 28\u201342 days application to offer. Can reapply immediately if unsuccessful at any stage."}
+    ],
+    questions:[
+      {q:"Name a market trend that interests you and explain why.",type:"Technical",stage:"HireVue",votes:143},
+      {q:"Tell me about a time you had to build a relationship with someone who was initially difficult to work with.",type:"Behavioural",stage:"HireVue",votes:128},
+      {q:"Describe a time you had to solve a problem where the information available was unclear or incomplete.",type:"Behavioural",stage:"HireVue",votes:118},
+      {q:"How do you manage your work commitments when you have multiple competing deadlines?",type:"Situational",stage:"HireVue",votes:94},
+      {q:"Why do you want to work for CommBank specifically, over other major banks?",type:"Motivational",stage:"Interview",votes:88},
+      {q:"CBA has five core values: integrity, accountability, collaboration, excellence, and service. Which resonates most with you and why?",type:"Motivational",stage:"Interview",votes:76},
+      {q:"What is the biggest professional risk you have taken and how did you manage it?",type:"Behavioural",stage:"Interview",votes:67},
+      {q:"Give me an example of a time you demonstrated integrity in a genuinely challenging situation.",type:"Behavioural",stage:"Interview",votes:61},
+      {q:"Tell me about yourself and walk me through why you are applying to CBA.",type:"Motivational",stage:"HireVue",votes:58}
+    ],
+    feed:[
+      {who:"Melbourne \u00b7 CS \u00b7 WAM 74",stage:"waiting",stageLabel:"Still waiting",time:"5h ago",body:"Completed the HireVue 3 weeks ago and nothing since. The 7-question format took about 25 minutes. Anyone else still waiting on the Tech stream? Results apparently don\u2019t drop until late March even if you applied in February.",likes:8,metoo:23},
+      {who:"UNSW \u00b7 Software Eng \u00b7 WAM 77",stage:"invite",stageLabel:"AC invite",time:"1d ago",body:"Assessment centre invite for Tech stream. Full day in Sydney. Two parts: formal interview with 2 assessors in the morning, then a group task with 4 other candidates. Anyone done the CBA tech AC recently and know what the group task involves?",likes:15,metoo:9},
+      {who:"UTS \u00b7 Info Systems \u00b7 WAM 69",stage:"reject",stageLabel:"Rejected at HireVue",time:"2d ago",body:"Did not pass the HireVue for the Data & Analytics stream. Market trend question caught me off guard \u2014 prepare something specific, not just a generic answer about AI. They want you to show genuine interest in what is actually happening in finance and tech.",likes:34,metoo:21}
+    ],
+    reviews:[
+      {who:"Commerce/Finance grad \u00b7 UNSW \u00b7 2025",stars:4,text:"Process: online application, SHL psychometric (numerical, inductive, personality), HireVue with ~7 questions, then assessment centre. No technical finance questions in any interview. Video interview covered industry trends and general motivations. AC group task was the most interesting component."},
+      {who:"CS grad \u00b7 UNSW \u00b7 2025",stars:4,text:"Process took about 2 months total. The assessment centre was the most valuable part \u2014 both to be assessed and to understand if I actually wanted the role. Group task involved a realistic business scenario. Rotational program is genuinely broad exposure across the bank."},
+      {who:"Multiple applicants \u00b7 Glassdoor 2025",stars:3,text:"Applied and received automated psychometric games immediately. Then HireVue invite with approximately 7 questions covering building relationships, handling change, solving unclear problems, and market trends. Waited until end of March for HireVue results regardless of when you applied \u2014 communication is slow."}
+    ]
+  },
+  {
+    id:"aggp",
+    company:"Australian Government (AGGP)",
+    role:"Data Graduate \u2014 Analyst / Scientist / Engineer / Manager",
+    sector:"Government",
+    location:"Canberra / Sydney / Various",
+    status:"open",
+    closes:"1 Apr 2026",
+    abbr:"AG",
+    bg:"#e8f0eb",
+    color:"#2a5a3b",
+    submissions:74,
+    responseRate:82,
+    interviewRate:38,
+    offerRate:16,
+    avgDays:7,
+    activity:5,
+    salary:"$68\u201378k",
+    topUnis:[{n:"ANU",p:38},{n:"Melbourne",p:18},{n:"UNSW",p:14},{n:"Monash",p:12},{n:"UQ",p:10}],
+    topDegrees:[{n:"Data Science/Stats",p:34},{n:"Computer Science",p:28},{n:"Mathematics",p:18},{n:"Engineering",p:12},{n:"Economics",p:8}],
+    process:[
+      {s:"Application",t:"Opens March 2025 for 2026 intake",d:"Single application covering all ~40 participating agencies. Select stream (Data Generalist, Data Scientist, Mathematician/Statistician, Data Engineer, Data Manager, Geospatial Specialist) and agency preferences. Must be Australian citizen. Degree completed between Jan 2021 and Dec 2025 for 2026 intake."},
+      {s:"Online Assessment",t:"Week 1\u20132 after close",d:"Cognitive ability test, situational judgement, and behavioural assessment. Standard APS assessment format. High volume of applicants means this is a real filter.",now:true},
+      {s:"Panel Interview",t:"May\u2013June (invites sent approx. May 8 based on 2025 Whirlpool reports)",d:"STAR-format behavioural questions. Approximately 30 minutes. Virtual. Interviewers assess against APS Graduate capabilities. Research the APS Graduate Capability framework before attending."},
+      {s:"Offer",t:"July\u2013August",d:"Offers made by participating agencies from the merit pool. Merit pool stays open 18 months from advertisement. Two-day Canberra orientation is mandatory. Interstate relocation supported. Some rural/regional placements possible. Security clearance forms required \u2014 start promptly."}
+    ],
+    questions:[
+      {q:"Tell me about a time you communicated complex data findings to a non-technical audience.",type:"Behavioural",stage:"Interview",votes:88},
+      {q:"Describe a situation where you had to work with incomplete or messy data. How did you approach it?",type:"Behavioural",stage:"Interview",votes:72},
+      {q:"Give an example of a time you identified an insight from data that influenced a decision.",type:"Behavioural",stage:"Interview",votes:61},
+      {q:"Tell me about a time you had to prioritise competing tasks or projects. How did you decide what to focus on?",type:"Behavioural",stage:"Interview",votes:54}
+    ],
+    feed:[
+      {who:"ANU \u00b7 Data Science \u00b7 WAM 81",stage:"offer",stageLabel:"Offer received",time:"3d ago",body:"ABS offer confirmed as first preference. Process from interview to offer took about 6 weeks. Two-day Canberra orientation is mandatory but they support interstate relocation. If you want a specific city email the agency directly after offer \u2014 they have some flexibility.",likes:33,metoo:0},
+      {who:"Melbourne \u00b7 Statistics \u00b7 WAM 76",stage:"invite",stageLabel:"Interview invite",time:"5d ago",body:"Interview invite came through around May 8, consistent with what others on Whirlpool reported for last year. Virtual panel, ~30 minutes, STAR format. Research the APS Graduate Capability framework specifically \u2014 not generic public service values.",likes:24,metoo:7},
+      {who:"UNSW \u00b7 CS \u00b7 WAM 72",stage:"waiting",stageLabel:"Still waiting",time:"1w ago",body:"Passed the online assessment but no interview invite yet. Is anyone else still waiting? The thread from last year suggests some people heard later than others depending on which agency stream they applied for.",likes:18,metoo:29}
+    ],
+    reviews:[
+      {who:"Data Science grad \u00b7 ANU \u00b7 2025",stars:4,text:"Applied to ABS as first preference and got an offer. The process is opaque \u2014 long gaps between stages with little communication. Interview invites went out around May 8, consistent with Whirlpool. Two-day Canberra orientation is mandatory. Email the agency directly after offer if you want to negotiate placement city."},
+      {who:"Engineering/Statistics \u00b7 2025",stars:3,text:"Applied for the Data Scientist stream. Did not hear back after the online assessment. High volume of applicants means the assessment is a real filter. Only about 1 in 4 people on the Whirlpool thread appeared to make it through to interview based on reporting."},
+      {who:"Multiple applicants \u00b7 Glassdoor 2024",stars:4,text:"Behavioural questions in STAR format assessed against APS graduate capabilities. Panel interview was 30 minutes and felt straightforward once I had researched the capability framework. Security clearance forms after offer take time \u2014 start them as soon as they arrive. Canberra-based for at least the first rotation."}
+    ]
+  }
+  ,{
+    id:"anz",
+    company:"ANZ Bank",
+    role:"Graduate Program \u2014 Retail / Institutional / Technology / ANZ Plus",
+    sector:"Finance",
+    location:"Sydney / Melbourne / Brisbane",
+    status:"open",
+    closes:"22 Apr 2026",
+    abbr:"AN",
+    bg:"#e8edf5",
+    color:"#2a4a7a",
+    submissions:67,
+    responseRate:72,
+    interviewRate:26,
+    offerRate:8,
+    avgDays:11,
+    activity:8,
+    salary:"$75\u201390k",
+    topUnis:[{n:"Melbourne",p:26},{n:"UNSW",p:22},{n:"USYD",p:18},{n:"Monash",p:16},{n:"UQ",p:10}],
+    topDegrees:[{n:"Commerce/Finance",p:36},{n:"Economics",p:22},{n:"Computer Science",p:18},{n:"Engineering",p:12},{n:"Accounting",p:8}],
+    process:[
+      {s:"Application",t:"18 Mar \u2013 22 Apr",d:"Online application. Select stream and location preferences at this stage. ANZ Plus is Melbourne and Sydney only. Institutional is Brisbane, Sydney, and Perth. Technology is Melbourne. Contact the ANZ graduate recruitment team via the ANZ careers portal for extension requests on any assessment."},
+      {s:"Pymetrics Games",t:"Week 1\u20132",d:"Neuroscience game-based assessment via Pymetrics. About 12 games taking 30 minutes total. Important: if you have completed Pymetrics for another company in the past 330 days, your existing scores are reused automatically \u2014 you cannot redo the test. ANZ confirmed this is acceptable. Results are shared across companies using Pymetrics for 330 days.",now:true},
+      {s:"Personality Questionnaire (SHL)",t:"Within 48 hrs of Pymetrics",d:"SHL personality questionnaire sent shortly after Pymetrics completion. Typically arrives within a few hours to 48 hours. Some applicants report receiving both Pymetrics and VI together depending on stream."},
+      {s:"Digital Interview (HireVue)",t:"Week 2\u20133",d:"6 questions total: self-introduction, why this role, and STAR behavioural questions. Camera on throughout. Also includes gamified assessments (numerosity, singularity, shapedance, portrait games) combined in the same session. 72-hour window. Can view scores via HireVue feedback report after completion."},
+      {s:"Final Interview",t:"Week 4\u20136",d:"For ANZ Plus stream: no assessment centre \u2014 process concludes with a final interview after the digital interview. For other streams: panel or 1-on-1 interview. Commercial stream calls for final interview scheduling went out around the time OA results were processed."},
+      {s:"Offer",t:"Week 6\u20138",d:"Offers made by stream. Location preferences confirmed at offer stage \u2014 email the team if you want to be considered for other locations. ANZ Plus has confirmed fast fill \u2014 apply early as positions can close before the official deadline."}
+    ],
+    questions:[
+      {q:"Tell us about yourself and why you are interested in a role at ANZ.",type:"Motivational",stage:"Digital Interview",votes:156},
+      {q:"Tell us about a time when you were in a difficult situation. How did you overcome it?",type:"Behavioural",stage:"Digital Interview",votes:134},
+      {q:"Describe a time you had to learn something new quickly and how you approached it.",type:"Behavioural",stage:"Digital Interview",votes:118},
+      {q:"Why ANZ specifically, and why this stream?",type:"Motivational",stage:"Digital Interview",votes:98},
+      {q:"Tell me about a time you worked effectively as part of a team toward a shared goal.",type:"Behavioural",stage:"Final Interview",votes:87},
+      {q:"How do ANZ values of integrity, collaboration, accountability, respect, and excellence align with your own?",type:"Motivational",stage:"Final Interview",votes:72}
+    ],
+    feed:[
+      {who:"Melbourne \u00b7 Commerce/Finance \u00b7 WAM 76",stage:"invite",stageLabel:"Final interview invite",time:"1d ago",body:"Final interview invite for ANZ Plus stream. Good to know: ANZ Plus has no assessment centre \u2014 it goes straight to final interview after the digital interview. Also: if you did Pymetrics for another company in the last 330 days your scores carry over and you cannot redo it. ANZ said this is fine.",likes:24,metoo:9},
+      {who:"UNSW \u00b7 Economics \u00b7 WAM 74",stage:"waiting",stageLabel:"Still waiting",time:"2d ago",body:"Finished Pymetrics and SHL personality questionnaire. Waiting on the digital interview link. Pymetrics carried over from a PwC application 2 months ago. Anyone know if ANZ actually checks the individual game scores or just the overall profile?",likes:18,metoo:31},
+      {who:"UQ \u00b7 Commerce \u00b7 WAM 72",stage:"reject",stageLabel:"Rejected at Pymetrics",time:"4d ago",body:"Rejected automatically after Pymetrics \u2014 the rejection email made it pretty clear it was based on the game scores. Other companies using the same Pymetrics test progressed me fine, so it seems ANZ weights certain traits differently. Nothing you can do if your old scores do not match their profile.",likes:41,metoo:22}
+    ],
+    reviews:[
+      {who:"Commerce grad \u00b7 Melbourne \u00b7 2025",stars:4,text:"Process moved quickly once you start. Pymetrics took 30 minutes, SHL questionnaire arrived the same evening. HireVue had 6 questions including some gamified components alongside the video questions. Camera was on the whole time. Final interview was relaxed and conversational."},
+      {who:"Glassdoor \u00b7 Melbourne \u00b7 2024",stars:3,text:"Virtual digital interview with 6 questions: STAR behavioural and some gamified assessments. Camera is on throughout including during the games. Standard behavioural questions expected STAR responses. Asking about difficult situations and learning new things quickly."},
+      {who:"Whirlpool thread \u00b7 2025",stars:4,text:"The Pymetrics reuse policy is a genuine gotcha \u2014 if you did it for another employer in the last 330 days, your scores are locked and reused automatically. ANZ confirmed this is accepted. The order of assessments varies by stream: some get Pymetrics first, others get the video interview and gamified assessment together."}
+    ]
+  },
+  {
+    id:"deloitte",
+    company:"Deloitte Australia",
+    role:"Graduate Program \u2014 Audit / Consulting / Tax / Technology",
+    sector:"Accounting",
+    location:"Sydney / Melbourne / Brisbane / Perth",
+    status:"open",
+    closes:"Mar 2026",
+    abbr:"DL",
+    bg:"#fdf3e3",
+    color:"#c17d2a",
+    submissions:88,
+    responseRate:68,
+    interviewRate:29,
+    offerRate:10,
+    avgDays:11,
+    activity:9,
+    salary:"$70\u201380k",
+    topUnis:[{n:"USYD",p:26},{n:"UNSW",p:24},{n:"Melbourne",p:20},{n:"Macquarie",p:14},{n:"UTS",p:10}],
+    topDegrees:[{n:"Commerce/Accounting",p:44},{n:"Commerce/Finance",p:24},{n:"Business",p:16},{n:"IT/CS",p:10},{n:"Other",p:6}],
+    process:[
+      {s:"Application",t:"Week 0",d:"CV and transcript. Apply to a maximum of two roles per cycle. No cover letter required \u2014 instead, you answer stream-specific screening questions about your interest in that business unit. Audit roles typically start in January; most other streams start in March. Eligibility: final year or completed within 24 months."},
+      {s:"Immersive Online Assessment",t:"Week 1\u20132",d:"Cappfinity-powered immersive assessment. A client-focused set of virtual activities designed to assess your strengths. The link does not expire so no extension needed. Completes with a personalised feedback report. Assessment was updated in 2026 \u2014 if you completed it in 2025 you need to redo it. If you applied post-July 2024, your previous result stands. Cut-off is widely reported in prep communities as around the 70th percentile, though Deloitte does not confirm this publicly.",now:true},
+      {s:"Short Digital Interview or Job Simulator",t:"Week 2\u20133",d:"Three quick video questions about your achievements and interests. Approximately 1 minute of prep time per question. Glassdoor reports confirm questions cover: tell me about yourself, how you learned a new technology, a leadership example, and a motivational question. Some streams get a job simulator instead of a video interview."},
+      {s:"Assessment Day",t:"Week 4\u20138",d:"In-person or virtual depending on location. Activities include: information sessions, group case study (with a couple of other candidates), and a 1-on-1 interview with a senior leader in that business area. Exact format depends on role and stream. Check the Deloitte portal \u2014 if it says Assessment Day your AC has been scheduled, not just that you passed the VI stage."},
+      {s:"Offer",t:"Week 6\u20138",d:"Verbal offer within 7 days of assessment day per Whirlpool reports. Average 54 days application to offer according to Glassdoor. Offers and rejections sent separately \u2014 not in a batch."}
+    ],
+    questions:[
+      {q:"Tell me about yourself.",type:"Motivational",stage:"Digital Interview",votes:178},
+      {q:"Describe a time you had to learn a new technology quickly. How did you approach it?",type:"Behavioural",stage:"Digital Interview",votes:156},
+      {q:"Give me a leadership example \u2014 a time you led others or took initiative on a team.",type:"Behavioural",stage:"Digital Interview",votes:143},
+      {q:"Why Deloitte specifically, and why this stream?",type:"Motivational",stage:"Digital Interview",votes:128},
+      {q:"Tell me about a time you had to adapt to a changing situation at pace.",type:"Behavioural",stage:"Assessment Day",votes:112},
+      {q:"Describe a time you worked through a complex analytical problem. How did you structure your thinking?",type:"Behavioural",stage:"Assessment Day",votes:94},
+      {q:"What do you know about the challenges facing our clients in this sector right now?",type:"Technical",stage:"Assessment Day",votes:78}
+    ],
+    feed:[
+      {who:"UNSW \u00b7 Commerce/Accounting \u00b7 WAM 75",stage:"invite",stageLabel:"AC invite",time:"6h ago",body:"Portal updated to Assessment Day status for both my streams. Key tip: if the Deloitte portal says Assessment Day it means you have been scheduled, not just that you are still in the running from the digital interview stage. This confused a lot of people on the Whirlpool thread.",likes:33,metoo:12},
+      {who:"Macquarie \u00b7 Business \u00b7 WAM 71",stage:"reject",stageLabel:"Rejected at OA",time:"2d ago",body:"Did not pass the Cappfinity immersive assessment. Hardest OA I have done \u2014 very different from SHL numerical/verbal. Client scenario-based, time-factored on some questions. The cut-off is widely reported as around the 70th percentile though unconfirmed. Practice Cappfinity specifically, not just SHL.",likes:44,metoo:28},
+      {who:"USYD \u00b7 Commerce/Finance \u00b7 WAM 78",stage:"offer",stageLabel:"Offer received",time:"4d ago",body:"Offer for Consulting stream, Melbourne. 7 days from AC to offer. Group case in the morning involved 3 of us working through a client scenario \u2014 genuinely interesting and felt like real consulting work. 1-on-1 in the afternoon was with a partner. Relaxed but substantive.",likes:56,metoo:0}
+    ],
+    reviews:[
+      {who:"Commerce grad \u00b7 Sydney \u00b7 2026",stars:4,text:"Process was smooth overall. Four questions in the digital interview: tell me about yourself, learning a new technology, leadership example, and motivation question. Assessment day had a group case study with 2 other candidates and then a 1-on-1 interview with a senior leader. Offer came within a week of the AC."},
+      {who:"Whirlpool thread \u00b7 2025",stars:3,text:"The Cappfinity immersive OA is the hardest part. It is mostly un-timed but some questions are time-factored \u2014 the speed of your response contributes to your score. Cut-off is around the 70th percentile. The assessment was relaunched in 2026 so any completion from 2025 requires a redo. OA results and feedback report come instantly upon completion."},
+      {who:"IT grad \u00b7 Melbourne \u00b7 2025",stars:4,text:"Good process. My assessor at the AC was genuinely engaged and personable. The group case study was the most useful part \u2014 it showed whether you could work with strangers under time pressure. Recruiter communication was slow between OA and VI but improved after that."}
+    ]
+  },
+  {
+    id:"bhp",
+    company:"BHP",
+    role:"Graduate Engineer / Geologist / Metallurgist / Business Analyst",
+    sector:"Engineering",
+    location:"Perth / Brisbane / Various sites",
+    status:"open",
+    closes:"10 Apr 2026",
+    abbr:"BH",
+    bg:"#f0ebe8",
+    color:"#6b4226",
+    submissions:76,
+    responseRate:74,
+    interviewRate:28,
+    offerRate:9,
+    avgDays:74,
+    activity:4,
+    salary:"$85\u2013100k",
+    topUnis:[{n:"UWA",p:34},{n:"Curtin",p:26},{n:"UNSW",p:16},{n:"QUT",p:12},{n:"Adelaide",p:8}],
+    topDegrees:[{n:"Mining Engineering",p:34},{n:"Mechanical Eng",p:24},{n:"Chemical Eng",p:20},{n:"Electrical Eng",p:12},{n:"Geology/Earth Sci",p:10}],
+    process:[
+      {s:"Application",t:"Week 0",d:"Resume only. No cover letter, no transcript required at this stage. Transcript provided prior to start date only if offered. BHP does not ask for academic marks at application. Answer competency questions on the application form demonstrating BHP Charter Values (safety, sustainability, integrity, respect, performance)."},
+      {s:"Online Assessment",t:"Week 2\u20133 (invites sent around 15 Mar based on Whirlpool)",d:"Video interview component (6 behavioural questions, 180 seconds each, 4 re-records allowed) combined with 3 cognitive games. Deadline typically 10 April. Whirlpool confirms up to 72 hours to complete once received. Questions include: introduce yourself, why this role, safety/values scenarios, leadership and problem-solving examples.",now:true},
+      {s:"Engagement Centre",t:"May\u2013June (approximately 6 weeks after OA deadline)",d:"BHP calls this an Engagement Centre, not an assessment centre. Can be online or in-person. Format: overview session with BHP employees, 1-on-1 interview with a line leader (~1 hour, behaviour-focused), followed by a group activity. In-person version includes meeting multiple BHP employees and candidates. Interstate candidates are not disadvantaged."},
+      {s:"Offer",t:"June\u2013July",d:"Permanent employment from day one \u2014 not a fixed-term contract. BHP will assist with relocation including accommodation support. Site placement confirmed at offer stage. Verbal offer typically followed by written offer letter within days. Medical required for site roles."}
+    ],
+    questions:[
+      {q:"Introduce yourself and tell us why you applied for this role at BHP.",type:"Motivational",stage:"Online Assessment",votes:143},
+      {q:"Tell us about a time you did what was right even though there were easier options available. What was the situation and outcome?",type:"Behavioural",stage:"Online Assessment",votes:134},
+      {q:"Describe a time you had to make a quick decision with limited information. What did you do?",type:"Behavioural",stage:"Online Assessment",votes:118},
+      {q:"Tell us about a time you had to overcome a significant problem. What was your approach?",type:"Behavioural",stage:"Online Assessment",votes:102},
+      {q:"Describe an achievement you are most proud of and why.",type:"Behavioural",stage:"Online Assessment",votes:91},
+      {q:"Tell me about a time safety was compromised or at risk in a setting you were in. What did you do?",type:"Safety",stage:"Engagement Centre",votes:128},
+      {q:"How would you improve efficiency on a process or system that is not performing at full capacity?",type:"Technical",stage:"Engagement Centre",votes:88},
+      {q:"Tell me about a time you worked in a diverse team under pressure. What was your role and what was the outcome?",type:"Behavioural",stage:"Engagement Centre",votes:76}
+    ],
+    feed:[
+      {who:"UWA \u00b7 Mining Eng \u00b7 WAM 72",stage:"invite",stageLabel:"Engagement Centre invite",time:"1d ago",body:"Engagement Centre invite for Perth. Full day. BHP calls it Engagement Centre not assessment centre \u2014 different vibe. Overview from BHP employees first, then 1-on-1 interview with a line leader, then a group activity. Safety questions are non-negotiable, prepare a specific example.",likes:24,metoo:8},
+      {who:"Curtin \u00b7 Chemical Eng \u00b7 WAM 68",stage:"waiting",stageLabel:"Still waiting",time:"3d ago",body:"Finished the online assessment. 6 video questions, 4 re-records each, 180 seconds per answer. Three cognitive games included. Based on last year's Whirlpool thread, expect about 6 weeks of silence after the OA before hearing about the Engagement Centre.",likes:19,metoo:34},
+      {who:"UNSW \u00b7 Mechanical Eng \u00b7 WAM 74",stage:"offer",stageLabel:"Offer received",time:"1w ago",body:"Offer as grad process engineer. Permanent from day one. Relocation package included. They are flexible on accommodation support if you push back \u2014 worth negotiating. Engagement Centre was genuinely interesting, not an interrogation. The BHP team wanted it to feel like a real conversation.",likes:38,metoo:0}
+    ],
+    reviews:[
+      {who:"Mining Eng grad \u00b7 UWA \u00b7 2025",stars:5,text:"BHP grad program is one of the best in resources. Application asks for resume only \u2014 no transcript, no cover letter. Online assessment has 6 video questions (4 re-record attempts, 180 seconds each) plus 3 cognitive games. Engagement Centre was relaxed and genuine. Safety questions are non-negotiable \u2014 prepare a real, specific example."},
+      {who:"Glassdoor \u00b7 Perth \u00b7 2025",stars:3,text:"Interview process was thorough \u2014 three interviews in total. Initial tests first, then a group interview, then a final 1-on-1. The online video questions felt like an interrogation compared to a normal face-to-face. Questions about safety were the most important to answer well. Average hiring time is 74 days from application."},
+      {who:"Whirlpool thread \u00b7 2025",stars:4,text:"OA invites went out around March 15. Deadline was April 10. About 6 weeks of silence after OA before Engagement Centre invites. No academic transcript required until after offer. Permanent employment from day one is a big draw. Relocation package provided but worth negotiating the accommodation component."}
+    ]
+  },
+  {
+    id:"kwm",
+    company:"King & Wood Mallesons",
+    role:"Graduate Solicitor",
+    sector:"Law",
+    location:"Sydney / Melbourne / Perth",
+    status:"open",
+    closes:"Jul 2026 (clerkship round)",
+    abbr:"KW",
+    bg:"#f5f3ee",
+    color:"#2a5a3b",
+    submissions:52,
+    responseRate:82,
+    interviewRate:35,
+    offerRate:12,
+    avgDays:46,
+    activity:6,
+    salary:"$80\u201390k",
+    topUnis:[{n:"USYD",p:35},{n:"UNSW",p:30},{n:"Melbourne",p:18},{n:"UQ",p:10},{n:"ANU",p:7}],
+    topDegrees:[{n:"Law (JD/LLB)",p:70},{n:"Law/Commerce",p:22},{n:"Law/Arts",p:8}],
+    process:[
+      {s:"Application",t:"Clerkship apps open June\u2013July",d:"Written application: CV, cover letter, academic transcript. WAM of 75+ is typical for progression. Clerkship experience is almost essential for a graduate offer \u2014 most grads complete a KWM clerkship first. NSW: offers are generally made from clerkship cohort."},
+      {s:"Psychometric Testing",t:"Week 1\u20132",d:"Verbal and numerical reasoning via SHL or Korn Ferry. Approximately 60 minutes total. Standard aptitude testing."},
+      {s:"First Interview",t:"Week 3\u20134",d:"45 minutes with one HR representative and one lawyer (typically senior associate or above). Based on your written application and transcript. Glassdoor confirms: questions are based on your CV experiences, a hypothetical legal scenario, and conversational questions about your interests outside of law. Described as relaxed and personal rather than standard behavioural questioning.",now:true},
+      {s:"Partner Interview",t:"Week 5\u20136",d:"Final interview with a partner. More substantive legal and commercial discussion. May include a brief written task or commercial law hypothetical. Described as an open conversation rather than a formal behavioural interview."},
+      {s:"Clerkship Offer Day / Graduate Offer",t:"Week 6\u20137",d:"Clerkship Offer Day is a structured event \u2014 firms contact candidates throughout the morning. NSW graduate offers are typically made from the clerkship cohort in the following cycle. Average 46 days from application to offer."}
+    ],
+    questions:[
+      {q:"Why King & Wood Mallesons over other top-tier firms?",type:"Motivational",stage:"First Interview",votes:143},
+      {q:"Tell me about a complex problem you broke down and solved methodically.",type:"Behavioural",stage:"First Interview",votes:118},
+      {q:"You are given a hypothetical client dispute \u2014 walk us through your initial approach to advising the client.",type:"Technical",stage:"Partner Interview",votes:102},
+      {q:"What area of commercial law interests you most and why?",type:"Motivational",stage:"First Interview",votes:89},
+      {q:"Tell me about your personal interests outside of law and study.",type:"Motivational",stage:"First Interview",votes:76},
+      {q:"Walk me through an experience from your CV that you are most proud of.",type:"Behavioural",stage:"First Interview",votes:64}
+    ],
+    feed:[
+      {who:"USYD \u00b7 LLB \u00b7 WAM 80",stage:"offer",stageLabel:"Graduate offer",time:"6h ago",body:"Graduate offer confirmed after completing a clerkship here last summer. In NSW the graduate offer almost always comes from the clerkship cohort, so if you want a grad role at KWM, the clerkship is your entry point. Partner interview was an open conversation not a formal behavioural format.",likes:33,metoo:0},
+      {who:"Melbourne \u00b7 JD \u00b7 WAM 77",stage:"invite",stageLabel:"First interview invite",time:"2d ago",body:"First interview booked. Glassdoor confirms it is very conversational and based on your CV rather than standard STAR behavioural questions. Prepare well on why KWM specifically and have a commercial awareness angle ready for the hypothetical scenario.",likes:11,metoo:4},
+      {who:"UNSW \u00b7 Law/Commerce \u00b7 WAM 75",stage:"reject",stageLabel:"Rejected at application",time:"1w ago",body:"Rejected at application stage. My WAM was 73 which I think was below their informal threshold. Also did not have a clerkship at a top-tier firm. Both seem to be significant filters before you even get to interview.",likes:28,metoo:14}
+    ],
+    reviews:[
+      {who:"LLB grad \u00b7 USYD \u00b7 2025",stars:5,text:"Extremely professional process. Both interviews were an open conversation focused on getting to know me and my interests, not just standard behavioural STAR questions. Clerkship experience at KWM was effectively required \u2014 nearly all grads in the cohort had clerked here first."},
+      {who:"Glassdoor \u00b7 2025",stars:4,text:"Very straightforward and welcoming. Interviewed by one HR member and one senior lawyer. Most questions revolved around CV experiences. One hypothetical legal scenario \u2014 they did not expect a correct answer, just structured thinking. Partner round was more substantive but still relaxed."},
+      {who:"JD grad \u00b7 Melbourne \u00b7 2024",stars:4,text:"Good response rate and clear communication throughout. Written criteria and cover letter took significant time to prepare well. First interview was genuinely conversational \u2014 they asked about my interests outside of law more than I expected. Partner interview included a brief commercial scenario which surprised me."}
+    ]
+  },
+  {
+    id:"allens",
+    company:"Allens",
+    role:"Graduate Solicitor",
+    sector:"Law",
+    location:"Sydney / Melbourne / Brisbane / Perth",
+    status:"open",
+    closes:"Jul 2026 (clerkship round)",
+    abbr:"AL",
+    bg:"#e8edf5",
+    color:"#2a4a7a",
+    submissions:44,
+    responseRate:79,
+    interviewRate:32,
+    offerRate:11,
+    avgDays:42,
+    activity:5,
+    salary:"$80\u201390k",
+    topUnis:[{n:"USYD",p:32},{n:"UNSW",p:28},{n:"Melbourne",p:20},{n:"UQ",p:12},{n:"ANU",p:8}],
+    topDegrees:[{n:"Law (JD/LLB)",p:68},{n:"Law/Commerce",p:24},{n:"Law/Arts",p:8}],
+    process:[
+      {s:"Application",t:"Clerkship apps open June\u2013July",d:"CV, cover letter, academic transcript. Covers: commercial awareness, why Allens, relevant experiences, and interest in specific practice areas. WAM of 75+ is typical. Cover letter is important \u2014 research Allens specifically, including recent deals and practice area strengths."},
+      {s:"Online Assessments",t:"Week 1\u20132",d:"Aptitude testing: verbal and numerical reasoning. Standard psychometric format. Some states also include a video interview component at this stage."},
+      {s:"Cocktail Evening / First Round",t:"Week 2\u20133",d:"Allens typically runs networking cocktail evenings before interviews where candidates can meet current lawyers. Performance at these events is informally assessed. First round interview follows: 45 minutes with HR and a senior associate or partner. Questions cover CV, commercial awareness, and motivation.",now:true},
+      {s:"Second Interview / Partner Interview",t:"Week 4\u20135",d:"Final interview with a partner and potentially a senior associate. More substantive commercial discussion. May include a current deals or transactions question. Reference checks typically begin here."},
+      {s:"Clerkship Offer Day",t:"Offer Day morning",d:"Structured offer day \u2014 firms call candidates throughout the morning with verbal offers, then written offers follow. Graduate offers made from the clerkship cohort in subsequent year."}
+    ],
+    questions:[
+      {q:"Why Allens over the other top-tier firms?",type:"Motivational",stage:"First Interview",votes:132},
+      {q:"Tell me about a recent commercial deal or transaction that interested you.",type:"Technical",stage:"Partner Interview",votes:118},
+      {q:"What practice area interests you most at Allens and why?",type:"Motivational",stage:"First Interview",votes:104},
+      {q:"Describe a time you had to deliver high-quality work under a tight deadline.",type:"Behavioural",stage:"First Interview",votes:89},
+      {q:"Tell me about an experience where you had to work through a complex or ambiguous problem.",type:"Behavioural",stage:"First Interview",votes:77},
+      {q:"What do you think will be the biggest challenges facing commercial law firms in the next five years?",type:"Technical",stage:"Partner Interview",votes:62}
+    ],
+    feed:[
+      {who:"USYD \u00b7 LLB \u00b7 WAM 79",stage:"invite",stageLabel:"Interview invite",time:"3d ago",body:"First round interview booked for next week. Allens runs a cocktail evening before interviews where you meet current lawyers \u2014 treat it seriously, it is informally assessed. Research recent Allens deals before going, especially in your preferred practice area.",likes:21,metoo:5},
+      {who:"Melbourne \u00b7 JD \u00b7 WAM 76",stage:"offer",stageLabel:"Clerkship offer",time:"5d ago",body:"Clerkship offer came through on offer morning. Called at 9:15am. Had about 30 minutes to decide before accepting. The partner interview asked about a specific recent deal \u2014 know one Allens transaction in your target practice area in detail.",likes:44,metoo:0},
+      {who:"UNSW \u00b7 Law/Commerce \u00b7 WAM 74",stage:"reject",stageLabel:"Rejected at interview",time:"1w ago",body:"Got to first interview, did not progress to partner round. No feedback provided. My commercial awareness question was weak \u2014 I knew the deal I mentioned but could not articulate why it was strategically interesting for the client.",likes:29,metoo:11}
+    ],
+    reviews:[
+      {who:"LLB grad \u00b7 USYD \u00b7 2025",stars:5,text:"Allens process was well-run from start to finish. Cocktail evening before first interviews was worth attending \u2014 you meet current lawyers who feed back informally. Cover letter needs to be genuinely tailored, not a template. Partner interview focused heavily on commercial awareness and a specific recent deal."},
+      {who:"JD grad \u00b7 Melbourne \u00b7 2024",stars:4,text:"Straightforward process. First interview covered CV and motivation questions. Partner interview was more commercial and substantive \u2014 asked about a current transaction and the strategic rationale from the client perspective. Reference check came quickly after the partner round."}
+    ]
+  },
+  {
+    id:"treasury",
+    company:"Australian Treasury",
+    role:"Graduate Economist / Graduate Development Program",
+    sector:"Government",
+    location:"Canberra / Sydney / Melbourne",
+    status:"open",
+    closes:"7 Apr 2026",
+    abbr:"TR",
+    bg:"#e8f0eb",
+    color:"#2a5a3b",
+    submissions:41,
+    responseRate:88,
+    interviewRate:40,
+    offerRate:18,
+    avgDays:83,
+    activity:3,
+    salary:"$72\u201382k",
+    topUnis:[{n:"ANU",p:40},{n:"Melbourne",p:22},{n:"USYD",p:16},{n:"Monash",p:12},{n:"UQ",p:10}],
+    topDegrees:[{n:"Economics",p:52},{n:"Economics/Finance",p:22},{n:"Public Policy",p:12},{n:"Mathematics/Stats",p:8},{n:"Political Science",p:6}],
+    process:[
+      {s:"Application",t:"2 Mar \u2013 7 Apr 2026",d:"Online application including CV and responses to eligibility questions. Must be Australian citizen. Degree in economics/econometrics required for Economist Stream (or any degree with economics major/minor). Completed within last 5 years. Must be willing to relocate to Canberra or travel there for development activities. Security clearance required on acceptance."},
+      {s:"Online Assessment",t:"After close",d:"Cognitive and situational assessment. Standard APS format. Whirlpool confirms: do not switch windows during the video interview component \u2014 the platform detects this and flags your application, even if you were just writing notes."},
+      {s:"Written Assessment",t:"Varies by stream",d:"For the Treasury Graduate Development Program specifically: a written policy exercise. Requires structured economic and policy reasoning. Glassdoor: applicants for the Economist Stream were asked to provide a policy response to a current economic issue. Prepare on housing, productivity, fiscal policy, and interest rate settings.",now:true},
+      {s:"Panel Interview",t:"Jan\u2013Feb (for most streams)",d:"30 minutes via Microsoft Teams. Very formal and efficient panel format. Important: you need to sign out of your personal Teams account to join. Interview questions are provided 15 minutes before the interview begins. Each question also has an unprovided follow-up question during the interview itself. STAR-format. Covers leadership, ownership, delivery, decision-making, and stakeholder management."},
+      {s:"Reference Checks",t:"After interview",d:"Two referees contacted \u2014 typically academic or internship supervisors. Whirlpool confirms references are done via an online report form, not a phone call (though some agencies may also call). Complete the form promptly when received."},
+      {s:"Offer",t:"Depends on stream",d:"Merit pool process means offers can come from participating agencies at different times. Treasury GDP offers go out separately from AGGP Economist Stream. Baseline security clearance required. Average 83 days from application to offer. Can take up to 18 months from advertisement."}
+    ],
+    questions:[
+      {q:"What policy area are you passionate about and why? Discuss the trade-offs involved.",type:"Technical",stage:"Panel Interview",votes:98},
+      {q:"Tell me about a time you had to communicate complex information to a non-technical audience.",type:"Behavioural",stage:"Panel Interview",votes:84},
+      {q:"Describe a time you worked in a team toward a shared goal where you had conflicting views on the approach.",type:"Behavioural",stage:"Panel Interview",votes:72},
+      {q:"What strengths do you bring to the Treasury and how would you contribute to the department?",type:"Motivational",stage:"Panel Interview",votes:64},
+      {q:"How would your degree and studies leave you well-positioned to work as a Treasury graduate?",type:"Motivational",stage:"Panel Interview",votes:56},
+      {q:"Describe a current economic issue in Australia. If you were advising government, what policy response would you recommend?",type:"Technical",stage:"Panel Interview",votes:88}
+    ],
+    feed:[
+      {who:"ANU \u00b7 Economics \u00b7 WAM 84",stage:"offer",stageLabel:"Offer received",time:"3d ago",body:"Treasury Graduate Development Program offer confirmed. Total process was about 83 days. Key tip: the panel interview questions are provided 15 minutes before the interview starts. Use that time well \u2014 structure your responses. There is also a follow-up question for each pre-provided question that is not shown to you in advance.",likes:38,metoo:0},
+      {who:"Melbourne \u00b7 Economics/Finance \u00b7 WAM 78",stage:"invite",stageLabel:"Interview invite",time:"1w ago",body:"Interview invite for Economist Stream. 30 minutes via Teams. Important: sign OUT of your personal Teams account before joining or you cannot connect. Questions sent 15 minutes before. Prepare on housing, productivity, and interest rates \u2014 those are the policy areas most commonly asked about.",likes:29,metoo:6},
+      {who:"USYD \u00b7 PPE \u00b7 WAM 76",stage:"waiting",stageLabel:"Still waiting",time:"2w ago",body:"Submitted the written assessment and reference contacts but no word yet. Whirlpool thread suggests emails go out in waves. Also warning: do not switch windows during the online video assessment \u2014 the platform detects it and flags your application even if you are just trying to take notes.",likes:22,metoo:18}
+    ],
+    reviews:[
+      {who:"Economics grad \u00b7 ANU \u00b7 2025",stars:5,text:"Treasury is genuinely excellent for macro policy work. The panel interview is very formal \u2014 30 minutes via Teams, questions provided 15 minutes in advance, follow-up questions not shown. Prepare on specific policy areas in depth. Security clearance after offer takes time \u2014 start immediately when forms arrive."},
+      {who:"Prosple \u00b7 Various \u00b7 2025",stars:4,text:"Economist Stream asked a combination of economic and behavioural questions. Economics questions were based on current policy issues including COVID, housing, and trade-offs in fiscal policy. 4 questions total in the interview. Be informed about current economic events and come with a specific policy area you are ready to defend in depth."},
+      {who:"Glassdoor \u00b7 Canberra \u00b7 2026",stars:4,text:"Single 30-minute panel interview, very formal and efficient. Conducted over Teams \u2014 sign out of your personal account first. Questions provided 15 minutes before with unprovided follow-ups during the interview. Covers leadership, ownership, delivery, and decision-making. Overall process took 5 months."}
+    ]
+  }
+
+
+];
+var activeSector = "All";
+var activeProgram = null;
+
+function renderCards(list) {
+  var grid = document.getElementById("progGrid");
+  grid.innerHTML = list.map(function(p) {
+    return '<div class="prog-card" onclick="openProgram(\'' + p.id + '\')">' +
+      (p.activity > 10 ? '<div class="hot-badge">active today</div>' : '') +
+      '<div class="pc-top"><div class="pc-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
+      '<div><div class="pc-title">' + p.company + '</div><div class="pc-role">' + p.role + '</div></div></div>' +
+      '<div class="pc-stats">' +
+        '<div class="pc-stat"><span class="pc-val">' + p.responseRate + '%</span><div class="pc-label">response rate</div></div>' +
+        '<div class="pc-stat"><span class="pc-val">' + p.avgDays + 'd</span><div class="pc-label">avg response</div></div>' +
+        '<div class="pc-stat"><span class="pc-val">' + p.offerRate + '%</span><div class="pc-label">offer rate</div></div>' +
+      '</div>' +
+      '<div class="pc-footer"><div class="pc-tags"><span class="pc-tag">' + p.sector + '</span><span class="pc-tag">' + p.location + '</span></div>' +
+      '<span class="pc-activity">' + p.submissions + ' submissions</span></div></div>';
+  }).join("");
+}
+
+function filterSector(sector, btn) {
+  activeSector = sector;
+  document.querySelectorAll(".pill").forEach(function(p) { p.classList.remove("on"); });
+  btn.classList.add("on");
+  applyFilters();
+}
+
+function filterCards(query) { applyFilters(query); }
+
+function applyFilters(query) {
+  var q = (query || "").toLowerCase();
+  var list = programs.filter(function(p) {
+    var matchSector = activeSector === "All" || p.sector === activeSector;
+    var matchQ = !q || p.company.toLowerCase().indexOf(q) > -1 || p.role.toLowerCase().indexOf(q) > -1 || p.sector.toLowerCase().indexOf(q) > -1;
+    return matchSector && matchQ;
+  });
+  renderCards(list);
+}
+
+function openProgram(id) {
+  activeProgram = programs.filter(function(p) { return p.id === id; })[0];
+  document.getElementById("home").style.display = "none";
+  document.getElementById("program-page").style.display = "block";
+  window.scrollTo(0, 0);
+  renderProgramPage(activeProgram);
+}
+
+function goHome() {
+  document.getElementById("home").style.display = "block";
+  document.getElementById("program-page").style.display = "none";
+}
+
+function stars(n) {
+  var s = "";
+  for (var i = 0; i < 5; i++) s += i < n ? "\u2605" : "\u2606";
+  return s;
+}
+
+function renderProgramPage(p) {
+  document.getElementById("ppHeader").innerHTML =
+    '<div class="pph-top"><div class="pph-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
+    '<div><div class="pph-name">' + p.company + '</div><div class="pph-sub">' + p.role + ' \u00b7 ' + p.location + '</div></div></div>' +
+    '<div class="pph-tags"><span class="pph-tag" style="color:var(--accent);border-color:var(--accent)">\uD83D\uDFE2 Open \u00b7 closes ' + p.closes + '</span>' +
+    '<span class="pph-tag">' + p.submissions + ' submissions</span><span class="pph-tag">' + p.salary + '</span><span class="pph-tag">' + p.sector + '</span></div>';
+
+  document.getElementById("ppStats").innerHTML =
+    '<div class="stat-card"><span class="stat-val">' + p.responseRate + '%</span><div class="stat-label">Response rate</div></div>' +
+    '<div class="stat-card"><span class="stat-val">' + p.interviewRate + '%</span><div class="stat-label">Interview rate</div></div>' +
+    '<div class="stat-card"><span class="stat-val">' + p.offerRate + '%</span><div class="stat-label">Offer rate</div></div>' +
+    '<div class="stat-card"><span class="stat-val">' + p.avgDays + 'd</span><div class="stat-label">Avg. days to response</div></div>';
+
+  var feedHTML = '<div class="post-box"><div class="pb-inner"><div class="avatar">you</div>' +
+    '<textarea class="post-input" placeholder="What happened with your ' + p.company + ' application? Stage update, tip, question\u2026" rows="1" onfocus="this.rows=3" onblur="if(!this.value)this.rows=1"></textarea></div>' +
+    '<div class="pb-footer"><span class="pb-hint">\uD83D\uDD12 Posted anonymously</span><button class="pb-submit" onclick="submitFeedPost(this)">Post</button></div></div>';
+  feedHTML += p.feed.map(function(f) {
+    return '<div class="feed-item"><div class="fi-top">' +
+      '<div class="avatar" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
+      '<div class="fi-meta"><span class="fi-who">' + f.who + '</span><span class="fi-stage stage-' + f.stage + '">' + f.stageLabel + '</span></div>' +
+      '<span class="fi-time">' + f.time + '</span></div>' +
+      '<div class="fi-body">' + f.body + '</div>' +
+      '<div class="fi-footer">' +
+        '<button class="fi-action" onclick="like(this)">\u2661 <span>' + f.likes + '</span></button>' +
+        '<button class="fi-action">\uD83D\uDCAC reply</button>' +
+        '<button class="me-too' + (f.metoo > 0 && f.stage === "waiting" ? " active" : "") + '" onclick="metoo(this)">+ me too <span class="mt-count">' + f.metoo + '</span></button>' +
+      '</div></div>';
+  }).join("");
+  document.getElementById("tab-feed").innerHTML = feedHTML;
+
+  var ovHTML = '<div style="margin-bottom:1.5rem"><div class="section-label">Universities hired from</div>';
+  p.topUnis.forEach(function(u) {
+    ovHTML += '<div class="bar-row"><span class="bar-label">' + u.n + '</span><div class="bar-track"><div class="bar-fill" style="width:0%" data-w="' + u.p + '%"></div></div><span class="bar-pct">' + u.p + '%</span></div>';
+  });
+  ovHTML += '</div><div><div class="section-label">Degrees hired from</div>';
+  p.topDegrees.forEach(function(d) {
+    ovHTML += '<div class="bar-row"><span class="bar-label">' + d.n + '</span><div class="bar-track"><div class="bar-fill amber" style="width:0%" data-w="' + d.p + '%"></div></div><span class="bar-pct">' + d.p + '%</span></div>';
+  });
+  ovHTML += '</div>';
+  document.getElementById("tab-overview").innerHTML = ovHTML;
+
+  var procHTML = '<div>';
+  p.process.forEach(function(s, i) {
+    procHTML += '<div class="tl-row"><div class="tl-dot' + (s.now ? ' now' : '') + '">' + (i+1) + '</div>' +
+      '<div><div class="tl-stage">' + s.s + '</div><div class="tl-timing">' + s.t + '</div><div class="tl-sub">' + s.d + '</div></div></div>';
+  });
+  procHTML += '</div>';
+  document.getElementById("tab-process").innerHTML = procHTML;
+
+  var qHTML = p.questions.map(function(q) {
+    return '<div class="q-item"><div class="q-text">\u201c' + q.q + '\u201d</div>' +
+      '<div class="q-row"><span class="q-tag">' + q.type + '</span><span class="q-tag">' + q.stage + '</span>' +
+      '<button class="q-votes" onclick="var n=parseInt(this.innerHTML.replace(\'&#9650; \',\'\'))+1;this.innerHTML=\'&#9650; \'+n;this.style.color=\'var(--accent)\'">\u25b2 ' + q.votes + '</button></div></div>';
+  }).join("") +
+    '<div style="margin-top:.85rem;text-align:center"><button style="background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:6px;padding:.45rem 1rem;font-family:var(--sans);font-size:13px;cursor:pointer" onclick="openModal()">+ Add a question you were asked</button></div>';
+  document.getElementById("tab-questions").innerHTML = qHTML;
+
+  var rHTML = p.reviews.map(function(r) {
+    return '<div class="review-item"><div class="review-header"><span class="review-who">' + r.who + '</span><span class="review-stars">' + stars(r.stars) + '</span></div><div class="review-text">' + r.text + '</div></div>';
+  }).join("") +
+    '<div style="text-align:center;margin-top:.5rem"><button style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.5rem 1.2rem;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer" onclick="openModal()">Write a review</button></div>';
+  document.getElementById("tab-reviews").innerHTML = rHTML;
+
+  document.querySelectorAll(".tab-btn").forEach(function(t) { t.classList.remove("active"); });
+  document.querySelectorAll(".tab-panel").forEach(function(t) { t.classList.remove("active"); });
+  document.querySelector(".tab-btn").classList.add("active");
+  document.getElementById("tab-feed").classList.add("active");
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll(".tab-btn").forEach(function(t) { t.classList.remove("active"); });
+  document.querySelectorAll(".tab-panel").forEach(function(t) { t.classList.remove("active"); });
+  btn.classList.add("active");
+  document.getElementById("tab-" + tab).classList.add("active");
+  if (tab === "overview") {
+    setTimeout(function() {
+      document.querySelectorAll(".bar-fill[data-w]").forEach(function(b) { b.style.width = b.dataset.w; });
+    }, 50);
+  }
+}
+
+function like(btn) {
+  var c = btn.querySelector("span");
+  btn.classList.toggle("liked");
+  c.textContent = parseInt(c.textContent) + (btn.classList.contains("liked") ? 1 : -1);
+}
+
+function metoo(btn) {
+  var c = btn.querySelector(".mt-count");
+  btn.classList.toggle("active");
+  c.textContent = parseInt(c.textContent) + (btn.classList.contains("active") ? 1 : -1);
+}
+
+async function submitFeedPost(btn) {
+  var ta = btn.closest(".post-box").querySelector("textarea");
+  var text = ta.value.trim();
+  if (!text) return;
+
+  btn.disabled = true;
+  btn.textContent = "Checking\u2026";
+
+  var result = await moderatePost(text, activeProgram ? activeProgram.company : "");
+
+  if (!result.approved) {
+    btn.disabled = false;
+    btn.textContent = "Post";
+    showModerationError(btn, result.reason);
+    return;
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Post";
+
+  var item = document.createElement("div");
+  item.className = "feed-item";
+  item.innerHTML = '<div class="fi-top"><div class="avatar">you</div>' +
+    '<div class="fi-meta"><span class="fi-who">just now</span><span class="fi-stage stage-update">Update posted</span></div>' +
+    '<span class="fi-time">just now</span></div>' +
+    '<div class="fi-body">' + escapeHtml(text) + '</div>' +
+    '<div class="fi-footer"><button class="fi-action" onclick="like(this)">\u2661 <span>0</span></button>' +
+    '<button class="fi-action">\uD83D\uDCAC reply</button>' +
+    '<button class="me-too" onclick="metoo(this)">+ me too <span class="mt-count">0</span></button></div>';
+  item.style.borderColor = "var(--accent)";
+  btn.closest(".post-box").insertAdjacentElement("afterend", item);
+  ta.value = ""; ta.rows = 1;
+  setTimeout(function() { item.style.borderColor = ""; }, 2000);
+}
+
+async function moderatePost(text, company) {
+  try {
+    var resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 200,
+        system: "You are a content moderator for GradGuide, an Australian graduate job application platform. Approve posts that share genuine graduate application experiences: stage updates, interview questions, tips, timeline info, rejections, offers, and process insights \u2014 even if negative or critical of a company. Reject posts that contain: personal attacks on named individuals, spam or promotional content, content unrelated to graduate job applications, hate speech or discrimination, or deliberate misinformation. Be liberal with approvals \u2014 honest negative experiences and criticism of recruitment processes are valuable. Respond ONLY with valid JSON: {\"approved\": true} or {\"approved\": false, \"reason\": \"brief plain-English reason shown to user\"}",
+        messages: [{ role: "user", content: "Company: " + company + "\n\nPost: " + text }]
+      })
+    });
+    if (!resp.ok) return { approved: true };
+    var data = await resp.json();
+    var raw = (data.content[0] && data.content[0].text || "{}").replace(/```json|```/g,"").trim();
+    return JSON.parse(raw);
+  } catch(e) {
+    return { approved: true };
+  }
+}
+
+function showModerationError(btn, reason) {
+  var box = btn.closest(".post-box");
+  var ex = box.querySelector(".mod-err");
+  if (ex) ex.remove();
+  var err = document.createElement("div");
+  err.className = "mod-err";
+  err.style.cssText = "font-size:12.5px;color:var(--red);background:var(--red-light);border:1px solid rgba(181,64,64,0.25);border-radius:6px;padding:.55rem .8rem;margin-top:.5rem;line-height:1.45;";
+  err.textContent = reason || "This post could not be approved. Please revise and try again.";
+  btn.closest(".pb-footer").insertAdjacentElement("afterend", err);
+  setTimeout(function() { if(err.parentNode) err.remove(); }, 7000);
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+
+function openModal() { document.getElementById("modalOverlay").classList.add("open"); }
+function closeModal() { document.getElementById("modalOverlay").classList.remove("open"); }
+function submitPost() { closeModal(); }
+
+renderCards(programs);
+</script>
+</body>
+</html>
