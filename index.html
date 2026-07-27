@@ -245,20 +245,20 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
         <input class="mi" type="text" id="modalCompany" placeholder="e.g. Goldman Sachs, Atlassian, Rio Tinto…" autocomplete="off">
       </div>
       <div class="mf"><div class="ml">What happened?</div>
-        <select class="ms">
+        <select class="ms" id="modalStage">
           <option>Invite / progressed</option><option>Received offer</option><option>Still waiting</option>
           <option>Rejected</option><option>Withdrew</option><option>Sharing info</option>
         </select>
       </div>
     </div>
     <div class="mf"><div class="ml">Tell people what happened</div>
-      <textarea class="mta" placeholder="What stage are you at? What was it like? Any tips for people behind you in the process..."></textarea>
+      <textarea class="mta" id="modalText" placeholder="What stage are you at? What was it like? Any tips for people behind you in the process..."></textarea>
     </div>
     <div class="mf">
       <div class="ml">Your background <span style="color:var(--muted2)">(shown anonymously)</span></div>
       <div class="m2" style="margin-top:.35rem">
-        <select class="ms"><option value="">University...</option><option>USYD</option><option>UNSW</option><option>Melbourne</option><option>ANU</option><option>UQ</option><option>Monash</option><option>Macquarie</option><option>Other</option></select>
-        <select class="ms"><option value="">WAM range...</option><option>65-69</option><option>70-74</option><option>75-79</option><option>80-84</option><option>85+</option></select>
+        <select class="ms" id="modalUni"><option value="">University...</option><option>USYD</option><option>UNSW</option><option>Melbourne</option><option>ANU</option><option>UQ</option><option>Monash</option><option>Macquarie</option><option>Other</option></select>
+        <select class="ms" id="modalWam"><option value="">WAM range...</option><option>65-69</option><option>70-74</option><option>75-79</option><option>80-84</option><option>85+</option></select>
       </div>
     </div>
     <div class="modal-footer">
@@ -993,7 +993,107 @@ function escapeHtml(s) {
 
 function openModal() { document.getElementById("modalOverlay").classList.add("open"); }
 function closeModal() { document.getElementById("modalOverlay").classList.remove("open"); }
-function submitPost() { closeModal(); }
+
+// Builds a homepage-grid-compatible program object from a raw Supabase row,
+// for companies that don't have hand-curated process/questions/reviews data.
+function makeLocalProgramFromDb(dbRow) {
+  var words = dbRow.company.split(" ").filter(Boolean);
+  var initials = words.slice(0, 2).map(function (w) { return w[0]; }).join("").toUpperCase();
+  if (!initials) initials = dbRow.company.substring(0, 2).toUpperCase();
+  return {
+    id: dbRow.slug,
+    company: dbRow.company,
+    role: dbRow.role || "Graduate Program",
+    sector: dbRow.industry || "Other",
+    location: "Australia",
+    status: "open",
+    closes: "",
+    abbr: initials,
+    bg: "#f0ebe8",
+    color: "#6b4226",
+    submissions: 0,
+    responseRate: 0,
+    interviewRate: 0,
+    offerRate: 0,
+    avgDays: 0,
+    activity: 0,
+    salary: "",
+    topUnis: [],
+    topDegrees: [],
+    process: [],
+    questions: [],
+    feed: [],
+    reviews: []
+  };
+}
+
+// Pulls in any programs that exist in Supabase but not in the hardcoded list above
+// (i.e. companies someone else has already posted about) and adds them to the grid.
+async function loadDynamicPrograms() {
+  var dbPrograms = await loadAllPrograms();
+  var existingSlugs = programs.map(function (p) { return p.id; });
+  dbPrograms.forEach(function (dp) {
+    if (existingSlugs.indexOf(dp.slug) === -1) {
+      programs.push(makeLocalProgramFromDb(dp));
+    }
+  });
+  renderCards(programs);
+}
+
+// The "+ Post update" modal — lets someone post about ANY company, not just the 11 above.
+// Creates the program in Supabase on the fly if it doesn't already exist.
+async function submitPost() {
+  var companyInput = document.getElementById("modalCompany");
+  var company = companyInput.value.trim();
+  var textEl = document.getElementById("modalText");
+  var text = textEl.value.trim();
+  var stage = document.getElementById("modalStage").value;
+  var uni = document.getElementById("modalUni").value;
+  var wam = document.getElementById("modalWam").value;
+  var postBtn = document.querySelector(".btn-post");
+
+  if (!company) { alert("Please enter a company name."); return; }
+  if (!text) { alert("Please tell us what happened."); return; }
+
+  postBtn.disabled = true;
+  postBtn.textContent = "Checking\u2026";
+
+  var modResult = await moderatePost(text, company);
+  if (!modResult.approved) {
+    postBtn.disabled = false;
+    postBtn.textContent = "Post anonymously";
+    alert(modResult.reason || "This post could not be approved. Please revise and try again.");
+    return;
+  }
+
+  var dbProgram = await createOrGetProgram(company);
+  if (!dbProgram) {
+    postBtn.disabled = false;
+    postBtn.textContent = "Post anonymously";
+    alert("Something went wrong saving this — please try again.");
+    return;
+  }
+
+  var slug = dbProgram.slug;
+  var content = "[" + stage + "] " + text;
+  await submitPostToDb(slug, content, uni, wam);
+
+  var alreadyOnGrid = programs.some(function (p) { return p.id === slug; });
+  if (!alreadyOnGrid) {
+    programs.push(makeLocalProgramFromDb(dbProgram));
+    renderCards(programs);
+  }
+
+  postBtn.disabled = false;
+  postBtn.textContent = "Post anonymously";
+  companyInput.value = "";
+  textEl.value = "";
+  document.getElementById("modalUni").value = "";
+  document.getElementById("modalWam").value = "";
+  closeModal();
+
+  openProgram(slug);
+}
 
 renderCards(programs);
 </script>
