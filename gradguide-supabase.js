@@ -42,7 +42,8 @@ async function loadPosts(programSlug) {
 
 // ---------- Save a new feed post to Supabase ----------
 // Called after your own moderatePost() approves the content.
-async function submitPostToDb(programSlug, content) {
+// university/wamRange are optional — pass them when known (e.g. from the global modal).
+async function submitPostToDb(programSlug, content, university, wamRange) {
   try {
     const { data: program, error: programErr } = await gg_supabase
       .from("programs")
@@ -61,6 +62,8 @@ async function submitPostToDb(programSlug, content) {
     const { error } = await gg_supabase.from("posts").insert({
       program_id: program.id,
       content: content,
+      university: university || null,
+      wam_range: wamRange || null,
       approved: true,
     });
 
@@ -77,8 +80,11 @@ async function submitPostToDb(programSlug, content) {
 
 // ---------- Turn a raw database row into the feed-item shape the site uses ----------
 function formatDbPost(row) {
+  var who = row.university
+    ? row.university + (row.wam_range ? " \u00b7 WAM " + row.wam_range : "")
+    : "Anonymous";
   return {
-    who: "Anonymous",
+    who: who,
     stage: "update",
     stageLabel: "Update posted",
     time: gg_timeAgo(row.created_at),
@@ -87,6 +93,76 @@ function formatDbPost(row) {
     metoo: 0,
   };
 }
+
+// ---------- Turn a free-typed company name into a URL-safe slug ----------
+function slugifyCompany(name) {
+  var slug = name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  return slug || "company";
+}
+
+// ---------- Load every program row from Supabase (used to merge into the homepage grid) ----------
+async function loadAllPrograms() {
+  try {
+    const { data, error } = await gg_supabase.from("programs").select("*").order("company");
+    if (error) {
+      console.error("GradGuide: error loading programs:", error);
+      return [];
+    }
+    return data || [];
+  } catch (e) {
+    console.error("GradGuide: loadAllPrograms failed:", e);
+    return [];
+  }
+}
+
+// ---------- Find a program by company name, or create it if it doesn't exist yet ----------
+// This is what lets someone post about a company that isn't one of the 11 pre-built pages.
+async function createOrGetProgram(companyName) {
+  var slug = slugifyCompany(companyName);
+  try {
+    const { data: existing } = await gg_supabase
+      .from("programs")
+      .select("*")
+      .eq("slug", slug)
+      .maybeSingle();
+    if (existing) return existing;
+
+    const { data: created, error: insertErr } = await gg_supabase
+      .from("programs")
+      .insert({ company: companyName, role: "Graduate Program", slug: slug, industry: "Other" })
+      .select()
+      .single();
+
+    if (insertErr) {
+      // Someone else may have just created the same company — re-check before giving up.
+      const { data: retry } = await gg_supabase
+        .from("programs")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
+      if (retry) return retry;
+      console.error("GradGuide: error creating program:", insertErr);
+      return null;
+    }
+    return created;
+  } catch (e) {
+    console.error("GradGuide: createOrGetProgram failed:", e);
+    return null;
+  }
+}
+
+// Merge any Supabase-only programs (posted by users, not in the hardcoded 11) into the
+// homepage grid. Runs once the page has fully loaded, after index.html's own script
+// has already defined `programs`, `renderCards`, and `makeLocalProgramFromDb`.
+window.addEventListener("load", function () {
+  if (typeof loadDynamicPrograms === "function") {
+    loadDynamicPrograms();
+  }
+});
 
 function gg_timeAgo(iso) {
   var diff = Date.now() - new Date(iso).getTime();
