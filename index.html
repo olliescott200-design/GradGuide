@@ -205,11 +205,11 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
   <div class="prog-layout">
     <div>
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('feed',this)">Live feed</button>
-        <button class="tab-btn" onclick="switchTab('overview',this)">Uni &amp; degree data</button>
-        <button class="tab-btn" onclick="switchTab('process',this)">Process</button>
-        <button class="tab-btn" onclick="switchTab('questions',this)">Questions</button>
-        <button class="tab-btn" onclick="switchTab('reviews',this)">Reviews</button>
+        <button class="tab-btn active" data-tab="feed" onclick="switchTab('feed',this)">Live feed</button>
+        <button class="tab-btn" data-tab="overview" onclick="switchTab('overview',this)">Uni &amp; degree data</button>
+        <button class="tab-btn" data-tab="process" onclick="switchTab('process',this)">Process</button>
+        <button class="tab-btn" data-tab="questions" onclick="switchTab('questions',this)">Questions</button>
+        <button class="tab-btn" data-tab="reviews" onclick="switchTab('reviews',this)">Reviews</button>
       </div>
       <div class="tab-content">
         <div id="tab-feed" class="tab-panel active"></div>
@@ -239,7 +239,15 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-title">Post an update</div>
-    <div class="anon-bar">&#128274; Posted anonymously &#8212; only your uni, degree, and WAM range are shown.</div>
+    <div class="anon-bar">&#128274; Posted anonymously &#8212; only your uni and WAM range are shown.</div>
+    <div class="mf"><div class="ml">What are you sharing?</div>
+      <select class="ms" id="modalCategory" onchange="toggleCategoryFields()">
+        <option value="feed">A quick update (Live Feed)</option>
+        <option value="process">A process / timeline step</option>
+        <option value="questions">An interview question</option>
+        <option value="reviews">A full review</option>
+      </select>
+    </div>
     <div class="m2">
       <div class="mf"><div class="ml">Company</div>
         <input class="mi" type="text" id="modalCompany" placeholder="e.g. Goldman Sachs, Atlassian, Rio Tinto…" autocomplete="off">
@@ -251,11 +259,26 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
         </select>
       </div>
     </div>
+    <div class="mf" id="modalProcessStageWrap" style="display:none">
+      <div class="ml">Which stage is this about? <span style="color:var(--red)">*</span></div>
+      <input class="mi" type="text" id="modalProcessStage" list="modalProcessStageOptions" placeholder="Pick an existing stage or type a new one (e.g. Final Interview)" autocomplete="off">
+      <datalist id="modalProcessStageOptions"></datalist>
+    </div>
     <div class="mf"><div class="ml">Tell people what happened</div>
       <textarea class="mta" id="modalText" placeholder="What stage are you at? What was it like? Any tips for people behind you in the process..."></textarea>
     </div>
+    <div class="mf" id="modalRatingWrap" style="display:none">
+      <div class="ml">Overall rating</div>
+      <select class="ms" id="modalRating">
+        <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; &mdash; Excellent</option>
+        <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734; &mdash; Good</option>
+        <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734; &mdash; Average</option>
+        <option value="2">&#9733;&#9734;&#9734;&#9734;&#9734; &mdash; Poor</option>
+        <option value="1">&#9734;&#9734;&#9734;&#9734;&#9734; &mdash; Very poor</option>
+      </select>
+    </div>
     <div class="mf">
-      <div class="ml">Your background <span style="color:var(--muted2)">(shown anonymously)</span></div>
+      <div class="ml">Your background <span style="color:var(--red)">* required, shown anonymously</span></div>
       <div class="m2" style="margin-top:.35rem">
         <select class="ms" id="modalUni"><option value="">University...</option><option>USYD</option><option>UNSW</option><option>Melbourne</option><option>ANU</option><option>UQ</option><option>Monash</option><option>Macquarie</option><option>Other</option></select>
         <select class="ms" id="modalWam"><option value="">WAM range...</option><option>65-69</option><option>70-74</option><option>75-79</option><option>80-84</option><option>85+</option></select>
@@ -795,8 +818,21 @@ async function openProgram(id) {
   renderProgramPage(activeProgram);
 
   var dbPosts = await loadPosts(activeProgram.id);
-  activeProgram.feed = dbPosts.map(formatDbPost).concat(activeProgram.feed);
+  var feedRows = dbPosts.filter(function(r){ return (r.category || "feed") === "feed"; });
+  var processRows = dbPosts.filter(function(r){ return r.category === "process"; });
+  var questionRows = dbPosts.filter(function(r){ return r.category === "questions"; });
+  var reviewRows = dbPosts.filter(function(r){ return r.category === "reviews"; });
+
+  activeProgram.feed = feedRows.map(formatDbPost).concat(activeProgram.feed);
+  activeProgram.communityProcess = processRows.map(formatDbProcessEntry);
+  activeProgram.communityQuestions = questionRows.map(formatDbQuestionEntry);
+  activeProgram.communityReviews = reviewRows.map(formatDbReviewEntry);
   renderProgramPage(activeProgram);
+}
+
+function goToTab(tabName) {
+  var btn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+  if (btn) switchTab(tabName, btn);
 }
 
 function goHome() {
@@ -830,9 +866,9 @@ function renderProgramPage(p) {
   }
   document.getElementById("ppStats").innerHTML = statsHTML;
 
-  var feedHTML = '<div class="post-box"><div class="pb-inner"><div class="avatar">you</div>' +
-    '<textarea class="post-input" placeholder="What happened with your ' + p.company + ' application? Stage update, tip, question\u2026" rows="1" onfocus="this.rows=3" onblur="if(!this.value)this.rows=1"></textarea></div>' +
-    '<div class="pb-footer"><span class="pb-hint">\uD83D\uDD12 Posted anonymously</span><button class="pb-submit" onclick="submitFeedPost(this)">Post</button></div></div>';
+  var feedHTML = '<div class="post-box" onclick="openModalFor(\'feed\')" style="cursor:pointer">' +
+    '<div class="pb-inner"><div class="avatar">you</div>' +
+    '<div class="post-input" style="color:var(--muted2);display:flex;align-items:center">What happened with your ' + p.company + ' application? Click to share\u2026</div></div></div>';
   if (p.feed.length === 0) {
     feedHTML += '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted)">' +
       '<div style="font-size:1.5rem;margin-bottom:.6rem">\u270D\uFE0F</div>' +
@@ -864,26 +900,93 @@ function renderProgramPage(p) {
   ovHTML += '</div>';
   document.getElementById("tab-overview").innerHTML = ovHTML;
 
+  var communityProcess = p.communityProcess || [];
+  var matchedStageNames = {};
+
+  function communityReportsHtml(entries) {
+    return '<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--border)">' +
+      '<div style="font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Community reports (' + entries.length + ')</div>' +
+      entries.map(function(c) {
+        return '<div style="margin-bottom:.35rem"><span style="font-family:var(--mono);font-size:11px;color:var(--muted)">' + c.who + '</span> \u2014 ' + c.body + '</div>';
+      }).join("") + '</div>';
+  }
+
   var procHTML = '<div>';
   p.process.forEach(function(s, i) {
+    var matches = communityProcess.filter(function(c) {
+      return c.stageName && c.stageName.trim().toLowerCase() === s.s.trim().toLowerCase();
+    });
+    if (matches.length > 0) matchedStageNames[s.s.trim().toLowerCase()] = true;
     procHTML += '<div class="tl-row"><div class="tl-dot' + (s.now ? ' now' : '') + '">' + (i+1) + '</div>' +
-      '<div><div class="tl-stage">' + s.s + '</div><div class="tl-timing">' + s.t + '</div><div class="tl-sub">' + s.d + '</div></div></div>';
+      '<div><div class="tl-stage">' + s.s + '</div><div class="tl-timing">' + s.t + '</div><div class="tl-sub">' + s.d + '</div>' +
+      (matches.length > 0 ? communityReportsHtml(matches) : '') + '</div></div>';
   });
   procHTML += '</div>';
+
+  // Any community-reported stage name that didn't match an existing curated
+  // stage is a genuinely new/different stage — surface it as its own entry
+  // rather than force-fitting it into the curated list.
+  var newStageGroups = {};
+  var newStageOrder = [];
+  communityProcess.forEach(function(c) {
+    var key = (c.stageName || "Other").trim();
+    if (matchedStageNames[key.toLowerCase()]) return;
+    if (!newStageGroups[key.toLowerCase()]) {
+      newStageGroups[key.toLowerCase()] = { label: key, entries: [] };
+      newStageOrder.push(key.toLowerCase());
+    }
+    newStageGroups[key.toLowerCase()].entries.push(c);
+  });
+
+  if (p.process.length === 0 && newStageOrder.length === 0) {
+    procHTML += '<div style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:12.5px">No process info yet \u2014 be the first to share what happened.</div>';
+  }
+
+  if (newStageOrder.length > 0) {
+    procHTML += '<div class="section-label" style="margin-top:1.25rem">' + (p.process.length > 0 ? "New stages reported by the community" : "Reported by the community") + '</div>';
+    newStageOrder.forEach(function(key) {
+      var group = newStageGroups[key];
+      procHTML += '<div class="tl-row"><div class="tl-dot">+</div>' +
+        '<div><div class="tl-stage">' + group.label + '</div><div class="tl-timing">' + group.entries.length + ' report' + (group.entries.length > 1 ? "s" : "") + '</div>' +
+        communityReportsHtml(group.entries) + '</div></div>';
+    });
+  }
+
+  procHTML += '<div style="margin-top:.85rem;text-align:center"><button style="background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:6px;padding:.45rem 1rem;font-family:var(--sans);font-size:13px;cursor:pointer" onclick="openModalFor(\'process\')">+ Share a process step</button></div>';
   document.getElementById("tab-process").innerHTML = procHTML;
 
+  var communityQuestions = p.communityQuestions || [];
   var qHTML = p.questions.map(function(q) {
     return '<div class="q-item"><div class="q-text">\u201c' + q.q + '\u201d</div>' +
       '<div class="q-row"><span class="q-tag">' + q.type + '</span><span class="q-tag">' + q.stage + '</span>' +
       '<button class="q-votes" onclick="var n=parseInt(this.innerHTML.replace(\'&#9650; \',\'\'))+1;this.innerHTML=\'&#9650; \'+n;this.style.color=\'var(--accent)\'">\u25b2 ' + q.votes + '</button></div></div>';
-  }).join("") +
-    '<div style="margin-top:.85rem;text-align:center"><button style="background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:6px;padding:.45rem 1rem;font-family:var(--sans);font-size:13px;cursor:pointer" onclick="openModal()">+ Add a question you were asked</button></div>';
+  }).join("");
+  if (p.questions.length === 0 && communityQuestions.length === 0) {
+    qHTML += '<div style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:12.5px">No questions shared yet \u2014 be the first to add one.</div>';
+  }
+  if (communityQuestions.length > 0) {
+    qHTML += '<div class="section-label" style="margin-top:1rem">Community reports</div>' + communityQuestions.map(function(q) {
+      return '<div class="q-item"><div class="q-text">\u201c' + q.q + '\u201d</div>' +
+        '<div class="q-row"><span class="q-tag">' + q.who + '</span>' +
+        '<button class="q-votes" onclick="var n=parseInt(this.innerHTML.replace(\'&#9650; \',\'\'))+1;this.innerHTML=\'&#9650; \'+n;this.style.color=\'var(--accent)\'">\u25b2 0</button></div></div>';
+    }).join("");
+  }
+  qHTML += '<div style="margin-top:.85rem;text-align:center"><button style="background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:6px;padding:.45rem 1rem;font-family:var(--sans);font-size:13px;cursor:pointer" onclick="openModalFor(\'questions\')">+ Add a question you were asked</button></div>';
   document.getElementById("tab-questions").innerHTML = qHTML;
 
+  var communityReviews = p.communityReviews || [];
   var rHTML = p.reviews.map(function(r) {
     return '<div class="review-item"><div class="review-header"><span class="review-who">' + r.who + '</span><span class="review-stars">' + stars(r.stars) + '</span></div><div class="review-text">' + r.text + '</div></div>';
-  }).join("") +
-    '<div style="text-align:center;margin-top:.5rem"><button style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.5rem 1.2rem;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer" onclick="openModal()">Write a review</button></div>';
+  }).join("");
+  if (p.reviews.length === 0 && communityReviews.length === 0) {
+    rHTML += '<div style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:12.5px">No reviews yet \u2014 be the first to write one.</div>';
+  }
+  if (communityReviews.length > 0) {
+    rHTML += '<div class="section-label" style="margin-top:1rem">Community reports</div>' + communityReviews.map(function(r) {
+      return '<div class="review-item"><div class="review-header"><span class="review-who">' + r.who + '</span><span class="review-stars">' + stars(r.stars) + '</span></div><div class="review-text">' + r.text + '</div></div>';
+    }).join("");
+  }
+  rHTML += '<div style="text-align:center;margin-top:.5rem"><button style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.5rem 1.2rem;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer" onclick="openModalFor(\'reviews\')">Write a review</button></div>';
   document.getElementById("tab-reviews").innerHTML = rHTML;
 
   document.querySelectorAll(".tab-btn").forEach(function(t) { t.classList.remove("active"); });
@@ -916,74 +1019,21 @@ function metoo(btn) {
   c.textContent = parseInt(c.textContent) + (btn.classList.contains("active") ? 1 : -1);
 }
 
-async function submitFeedPost(btn) {
-  var ta = btn.closest(".post-box").querySelector("textarea");
-  var text = ta.value.trim();
-  if (!text) return;
-
-  btn.disabled = true;
-  btn.textContent = "Checking\u2026";
-
-  var result = await moderatePost(text, activeProgram ? activeProgram.company : "");
-
-  if (!result.approved) {
-    btn.disabled = false;
-    btn.textContent = "Post";
-    showModerationError(btn, result.reason);
-    return;
-  }
-
-  await submitPostToDb(activeProgram.id, text);
-
-  btn.disabled = false;
-  btn.textContent = "Post";
-
-  var item = document.createElement("div");
-  item.className = "feed-item";
-  item.innerHTML = '<div class="fi-top"><div class="avatar">you</div>' +
-    '<div class="fi-meta"><span class="fi-who">just now</span><span class="fi-stage stage-update">Update posted</span></div>' +
-    '<span class="fi-time">just now</span></div>' +
-    '<div class="fi-body">' + escapeHtml(text) + '</div>' +
-    '<div class="fi-footer"><button class="fi-action" onclick="like(this)">\u2661 <span>0</span></button>' +
-    '<button class="fi-action">\uD83D\uDCAC reply</button>' +
-    '<button class="me-too" onclick="metoo(this)">+ me too <span class="mt-count">0</span></button></div>';
-  item.style.borderColor = "var(--accent)";
-  btn.closest(".post-box").insertAdjacentElement("afterend", item);
-  ta.value = ""; ta.rows = 1;
-  setTimeout(function() { item.style.borderColor = ""; }, 2000);
-}
-
 async function moderatePost(text, company) {
   try {
-    var resp = await fetch("https://api.anthropic.com/v1/messages", {
+    // Calls our own Vercel serverless function (/api/moderate), which holds the
+    // real Anthropic API key server-side and does the actual Claude call.
+    // Nothing here ever sees or exposes the API key.
+    var resp = await fetch("/api/moderate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 200,
-        system: "You are a content moderator for GradGuide, an Australian graduate job application platform. Approve posts that share genuine graduate application experiences: stage updates, interview questions, tips, timeline info, rejections, offers, and process insights \u2014 even if negative or critical of a company. Reject posts that contain: personal attacks on named individuals, spam or promotional content, content unrelated to graduate job applications, hate speech or discrimination, or deliberate misinformation. Be liberal with approvals \u2014 honest negative experiences and criticism of recruitment processes are valuable. Respond ONLY with valid JSON: {\"approved\": true} or {\"approved\": false, \"reason\": \"brief plain-English reason shown to user\"}",
-        messages: [{ role: "user", content: "Company: " + company + "\n\nPost: " + text }]
-      })
+      body: JSON.stringify({ text: text, company: company })
     });
     if (!resp.ok) return { approved: true };
-    var data = await resp.json();
-    var raw = (data.content[0] && data.content[0].text || "{}").replace(/```json|```/g,"").trim();
-    return JSON.parse(raw);
+    return await resp.json();
   } catch(e) {
     return { approved: true };
   }
-}
-
-function showModerationError(btn, reason) {
-  var box = btn.closest(".post-box");
-  var ex = box.querySelector(".mod-err");
-  if (ex) ex.remove();
-  var err = document.createElement("div");
-  err.className = "mod-err";
-  err.style.cssText = "font-size:12.5px;color:var(--red);background:var(--red-light);border:1px solid rgba(181,64,64,0.25);border-radius:6px;padding:.55rem .8rem;margin-top:.5rem;line-height:1.45;";
-  err.textContent = reason || "This post could not be approved. Please revise and try again.";
-  btn.closest(".pb-footer").insertAdjacentElement("afterend", err);
-  setTimeout(function() { if(err.parentNode) err.remove(); }, 7000);
 }
 
 function escapeHtml(s) {
@@ -991,8 +1041,43 @@ function escapeHtml(s) {
 }
 
 
-function openModal() { document.getElementById("modalOverlay").classList.add("open"); }
+function openModal() { openModalFor("feed"); }
+
+function openModalFor(category) {
+  document.getElementById("modalCategory").value = category;
+  toggleCategoryFields();
+  var companyInput = document.getElementById("modalCompany");
+  if (activeProgram && !companyInput.value) companyInput.value = activeProgram.company;
+  populateProcessStageOptions();
+  document.getElementById("modalOverlay").classList.add("open");
+}
+
+// Fills the "which stage" suggestions with THIS company's actual stage names
+// (curated + already community-reported) so people tag reports consistently
+// per-company, instead of choosing from one generic list that wouldn't fit
+// every company's different process.
+function populateProcessStageOptions() {
+  var list = document.getElementById("modalProcessStageOptions");
+  list.innerHTML = "";
+  if (!activeProgram) return;
+  var names = (activeProgram.process || []).map(function(s){ return s.s; });
+  (activeProgram.communityProcess || []).forEach(function(c) {
+    if (c.stageName && names.indexOf(c.stageName) === -1) names.push(c.stageName);
+  });
+  names.forEach(function(n) {
+    var opt = document.createElement("option");
+    opt.value = n;
+    list.appendChild(opt);
+  });
+}
+
 function closeModal() { document.getElementById("modalOverlay").classList.remove("open"); }
+
+function toggleCategoryFields() {
+  var cat = document.getElementById("modalCategory").value;
+  document.getElementById("modalRatingWrap").style.display = (cat === "reviews") ? "block" : "none";
+  document.getElementById("modalProcessStageWrap").style.display = (cat === "process") ? "block" : "none";
+}
 
 // Builds a homepage-grid-compatible program object from a raw Supabase row,
 // for companies that don't have hand-curated process/questions/reviews data.
@@ -1040,20 +1125,29 @@ async function loadDynamicPrograms() {
   renderCards(programs);
 }
 
-// The "+ Post update" modal — lets someone post about ANY company, not just the 11 above.
-// Creates the program in Supabase on the fly if it doesn't already exist.
+// The "Post an update" modal handles ALL submission types now — Live Feed, Process,
+// Questions, and Reviews — routed by the "What are you sharing?" selector. Every
+// submission requires uni + WAM, and creates the company in Supabase on the fly
+// if it doesn't already exist.
 async function submitPost() {
   var companyInput = document.getElementById("modalCompany");
   var company = companyInput.value.trim();
   var textEl = document.getElementById("modalText");
   var text = textEl.value.trim();
+  var category = document.getElementById("modalCategory").value;
   var stage = document.getElementById("modalStage").value;
+  var processStageEl = document.getElementById("modalProcessStage");
+  var processStage = processStageEl.value.trim();
   var uni = document.getElementById("modalUni").value;
   var wam = document.getElementById("modalWam").value;
+  var rating = document.getElementById("modalRating").value;
   var postBtn = document.querySelector(".btn-post");
 
   if (!company) { alert("Please enter a company name."); return; }
   if (!text) { alert("Please tell us what happened."); return; }
+  if (!uni) { alert("Please select your university \u2014 it's required so others can see hiring patterns."); return; }
+  if (!wam) { alert("Please select your WAM range \u2014 it's required so others can see hiring patterns."); return; }
+  if (category === "process" && !processStage) { alert("Please name which stage this is about."); return; }
 
   postBtn.disabled = true;
   postBtn.textContent = "Checking\u2026";
@@ -1075,8 +1169,10 @@ async function submitPost() {
   }
 
   var slug = dbProgram.slug;
-  var content = "[" + stage + "] " + text;
-  await submitPostToDb(slug, content, uni, wam);
+  var content = category === "feed" ? "[" + stage + "] " + text : text;
+  var ratingToSave = category === "reviews" ? parseInt(rating, 10) : null;
+  var stageNameToSave = category === "process" ? processStage : null;
+  await submitPostToDb(slug, content, uni, wam, category, ratingToSave, stageNameToSave);
 
   var alreadyOnGrid = programs.some(function (p) { return p.id === slug; });
   if (!alreadyOnGrid) {
@@ -1088,11 +1184,13 @@ async function submitPost() {
   postBtn.textContent = "Post anonymously";
   companyInput.value = "";
   textEl.value = "";
+  processStageEl.value = "";
   document.getElementById("modalUni").value = "";
   document.getElementById("modalWam").value = "";
   closeModal();
 
-  openProgram(slug);
+  await openProgram(slug);
+  if (category !== "feed") goToTab(category);
 }
 
 renderCards(programs);
