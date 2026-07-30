@@ -40,10 +40,14 @@ async function loadPosts(programSlug) {
   }
 }
 
-// ---------- Save a new feed post to Supabase ----------
+// ---------- Save a new post to Supabase ----------
 // Called after your own moderatePost() approves the content.
-// university/wamRange are optional — pass them when known (e.g. from the global modal).
-async function submitPostToDb(programSlug, content, university, wamRange) {
+// category is one of "feed" | "process" | "questions" | "reviews".
+// rating (1-5) only applies when category === "reviews".
+// stageName only applies when category === "process" — the specific stage
+// this report is about (e.g. "HireVue Video Interview"), so reports can be
+// grouped per-company instead of forced into one generic list of stages.
+async function submitPostToDb(programSlug, content, university, wamRange, category, rating, stageName) {
   try {
     const { data: program, error: programErr } = await gg_supabase
       .from("programs")
@@ -64,6 +68,9 @@ async function submitPostToDb(programSlug, content, university, wamRange) {
       content: content,
       university: university || null,
       wam_range: wamRange || null,
+      category: category || "feed",
+      rating: rating || null,
+      stage_name: stageName || null,
       approved: true,
     });
 
@@ -91,6 +98,39 @@ function formatDbPost(row) {
     body: escapeHtml(row.content),
     likes: 0,
     metoo: 0,
+  };
+}
+
+function gg_whoTag(row) {
+  return row.university
+    ? row.university + (row.wam_range ? " \u00b7 WAM " + row.wam_range : "")
+    : "Anonymous";
+}
+
+// ---------- Format a community-submitted process step for the Process tab ----------
+function formatDbProcessEntry(row) {
+  return {
+    who: gg_whoTag(row),
+    time: gg_timeAgo(row.created_at),
+    body: escapeHtml(row.content),
+    stageName: row.stage_name || "Other",
+  };
+}
+
+// ---------- Format a community-submitted interview question for the Questions tab ----------
+function formatDbQuestionEntry(row) {
+  return {
+    q: escapeHtml(row.content),
+    who: gg_whoTag(row),
+  };
+}
+
+// ---------- Format a community-submitted review for the Reviews tab ----------
+function formatDbReviewEntry(row) {
+  return {
+    who: gg_whoTag(row),
+    stars: row.rating || 0,
+    text: escapeHtml(row.content),
   };
 }
 
