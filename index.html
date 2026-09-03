@@ -193,6 +193,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
     <button class="pill" onclick="filterSector('Law',this)">Law</button>
     <button class="pill" onclick="filterSector('Tech',this)">Tech</button>
     <button class="pill" onclick="filterSector('Engineering',this)">Engineering</button>
+    <button class="pill" onclick="filterSector('Accounting',this)">Accounting</button>
     <button class="pill" onclick="filterSector('Government',this)">Government</button>
   </div>
   <div class="prog-grid" id="progGrid"></div>
@@ -257,6 +258,19 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
           <option>Invite / progressed</option><option>Received offer</option><option>Still waiting</option>
           <option>Rejected</option><option>Withdrew</option><option>Sharing info</option>
         </select>
+      </div>
+    </div>
+    <div class="mf">
+      <div class="ml">What sector(s) is this company in? <span style="color:var(--red)">*</span> <span style="color:var(--muted2)">(pick all that apply — e.g. a consulting firm might be both Consulting and Finance)</span></div>
+      <div id="modalSectors" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.35rem">
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Finance" style="margin-right:.3rem">Finance</label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Consulting" style="margin-right:.3rem">Consulting</label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Law" style="margin-right:.3rem">Law</label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Tech" style="margin-right:.3rem">Tech</label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Engineering" style="margin-right:.3rem">Engineering</label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Accounting" style="margin-right:.3rem">Accounting</label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Government" style="margin-right:.3rem">Government</label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Other" style="margin-right:.3rem">Other</label>
       </div>
     </div>
     <div class="mf" id="modalProcessStageWrap" style="display:none">
@@ -772,6 +786,15 @@ var programs = [
 var activeSector = "All";
 var activeProgram = null;
 
+// Returns a program's sector list whether it's an old curated entry (single
+// "sector" string) or a new community-created one (a "sectors" array) — so
+// filters and tags work the same way for both without rewriting old data.
+function programSectors(p) {
+  if (p.sectors && p.sectors.length) return p.sectors;
+  if (p.sector) return [p.sector];
+  return ["Other"];
+}
+
 function renderCards(list) {
   var grid = document.getElementById("progGrid");
   grid.innerHTML = list.map(function(p) {
@@ -788,7 +811,7 @@ function renderCards(list) {
           '<div class="pc-stat" style="grid-column:span 3;text-align:left;padding:.35rem .5rem"><span style="font-size:11.5px;color:var(--muted)">Stats will appear once enough people share their experience.</span></div>'
         ) +
       '</div>' +
-      '<div class="pc-footer"><div class="pc-tags"><span class="pc-tag">' + p.sector + '</span><span class="pc-tag">' + p.location + '</span></div>' +
+      '<div class="pc-footer"><div class="pc-tags">' + programSectors(p).map(function(s){ return '<span class="pc-tag">' + s + '</span>'; }).join("") + '<span class="pc-tag">' + p.location + '</span></div>' +
       '<span class="pc-activity" style="color:var(--muted2)">' + (p.submissions > 0 ? p.submissions + ' submissions' : 'No submissions yet') + '</span></div></div>';
   }).join("");
 }
@@ -805,8 +828,8 @@ function filterCards(query) { applyFilters(query); }
 function applyFilters(query) {
   var q = (query || "").toLowerCase();
   var list = programs.filter(function(p) {
-    var matchSector = activeSector === "All" || p.sector === activeSector;
-    var matchQ = !q || p.company.toLowerCase().indexOf(q) > -1 || p.role.toLowerCase().indexOf(q) > -1 || p.sector.toLowerCase().indexOf(q) > -1;
+    var matchSector = activeSector === "All" || programSectors(p).indexOf(activeSector) > -1;
+    var matchQ = !q || p.company.toLowerCase().indexOf(q) > -1 || p.role.toLowerCase().indexOf(q) > -1 || programSectors(p).join(" ").toLowerCase().indexOf(q) > -1;
     return matchSector && matchQ;
   });
   renderCards(list);
@@ -855,7 +878,7 @@ function renderProgramPage(p) {
     '<div class="pph-top"><div class="pph-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
     '<div><div class="pph-name">' + p.company + '</div><div class="pph-sub">' + p.role + ' \u00b7 ' + p.location + '</div></div></div>' +
     '<div class="pph-tags"><span class="pph-tag" style="color:var(--accent);border-color:var(--accent)">\uD83D\uDFE2 Applications open — check careers page</span>' +
-    '<span class="pph-tag">' + (p.submissions > 0 ? p.submissions + ' submissions' : 'No submissions yet') + '</span><span class="pph-tag">' + p.salary + '</span><span class="pph-tag">' + p.sector + '</span></div>';
+    '<span class="pph-tag">' + (p.submissions > 0 ? p.submissions + ' submissions' : 'No submissions yet') + '</span><span class="pph-tag">' + p.salary + '</span>' + programSectors(p).map(function(s){ return '<span class="pph-tag">' + s + '</span>'; }).join("") + '</div>';
 
   var statsHTML;
   if (p.submissions >= 10) {
@@ -1162,7 +1185,7 @@ function makeLocalProgramFromDb(dbRow) {
     id: dbRow.slug,
     company: dbRow.company,
     role: dbRow.role || "Graduate Program",
-    sector: dbRow.industry || "Other",
+    sectors: (dbRow.industries && dbRow.industries.length) ? dbRow.industries : ["Other"],
     location: "Australia",
     status: "open",
     closes: "",
@@ -1215,6 +1238,7 @@ async function submitPost() {
   var wam = document.getElementById("modalWam").value;
   var degree = document.getElementById("modalDegree").value;
   var rating = document.getElementById("modalRating").value;
+  var sectors = Array.prototype.slice.call(document.querySelectorAll('#modalSectors input:checked')).map(function(cb){ return cb.value; });
   var postBtn = document.querySelector(".btn-post");
 
   if (!company) { alert("Please enter a company name."); return; }
@@ -1222,6 +1246,7 @@ async function submitPost() {
   if (!uni) { alert("Please select your university \u2014 it's required so others can see hiring patterns."); return; }
   if (!wam) { alert("Please select your WAM range \u2014 it's required so others can see hiring patterns."); return; }
   if (!degree) { alert("Please select your degree \u2014 it's required so others can see hiring patterns."); return; }
+  if (sectors.length === 0) { alert("Please select at least one sector for this company."); return; }
   if (category === "process" && !processStage) { alert("Please name which stage this is about."); return; }
 
   postBtn.disabled = true;
@@ -1243,7 +1268,7 @@ async function submitPost() {
     );
     if (!useExisting) matchResult = null;
   }
-  var dbProgram = await createOrGetProgram(company, matchResult ? matchResult.program.id : null);
+  var dbProgram = await createOrGetProgram(company, matchResult ? matchResult.program.id : null, sectors);
   if (!dbProgram) {
     postBtn.disabled = false;
     postBtn.textContent = "Post anonymously";
@@ -1271,6 +1296,7 @@ async function submitPost() {
   document.getElementById("modalUni").value = "";
   document.getElementById("modalWam").value = "";
   document.getElementById("modalDegree").value = "";
+  document.querySelectorAll('#modalSectors input:checked').forEach(function(cb){ cb.checked = false; });
   closeModal();
 
   await openProgram(slug);
