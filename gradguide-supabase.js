@@ -161,8 +161,8 @@ async function loadAllPrograms() {
 
 // ---------- Find a program by company name, or create it if it doesn't exist yet ----------
 // This is what lets someone post about a company that isn't one of the 11 pre-built pages.
-async function createOrGetProgram(companyName) {
-  var slug = slugifyCompany(companyName);
+async function createOrGetProgram(companyName, forcedSlug) {
+  var slug = forcedSlug || slugifyCompany(companyName);
   try {
     const { data: existing } = await gg_supabase
       .from("programs")
