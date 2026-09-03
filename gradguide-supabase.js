@@ -27,6 +27,7 @@ async function loadPosts(programSlug) {
       .select("*")
       .eq("program_id", program.id)
       .eq("approved", true)
+      .lt("flagged_count", 3)
       .order("created_at", { ascending: false });
 
     if (error) {
