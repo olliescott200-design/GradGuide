@@ -263,6 +263,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
       <div class="ml">Which stage is this about? <span style="color:var(--red)">*</span></div>
       <input class="mi" type="text" id="modalProcessStage" list="modalProcessStageOptions" placeholder="Pick an existing stage or type a new one (e.g. Final Interview)" autocomplete="off">
       <datalist id="modalProcessStageOptions"></datalist>
+      <div id="modalProcessStageHint" style="font-size:11.5px;color:var(--muted);margin-top:.4rem;line-height:1.5"></div>
     </div>
     <div class="mf"><div class="ml">Tell people what happened</div>
       <textarea class="mta" id="modalText" placeholder="What stage are you at? What was it like? Any tips for people behind you in the process..."></textarea>
@@ -911,6 +912,11 @@ function renderProgramPage(p) {
       }).join("") + '</div>';
   }
 
+  function stageExplanationHtml(name) {
+    var ex = explainTerm(name);
+    return ex ? '<div style="font-size:11px;color:var(--muted2);font-style:italic;margin-top:.1rem">' + ex + '</div>' : '';
+  }
+
   var procHTML = '<div>';
   p.process.forEach(function(s, i) {
     var matches = communityProcess.filter(function(c) {
@@ -918,7 +924,7 @@ function renderProgramPage(p) {
     });
     if (matches.length > 0) matchedStageNames[s.s.trim().toLowerCase()] = true;
     procHTML += '<div class="tl-row"><div class="tl-dot' + (s.now ? ' now' : '') + '">' + (i+1) + '</div>' +
-      '<div><div class="tl-stage">' + s.s + '</div><div class="tl-timing">' + s.t + '</div><div class="tl-sub">' + s.d + '</div>' +
+      '<div><div class="tl-stage">' + s.s + '</div>' + stageExplanationHtml(s.s) + '<div class="tl-timing">' + s.t + '</div><div class="tl-sub">' + s.d + '</div>' +
       (matches.length > 0 ? communityReportsHtml(matches) : '') + '</div></div>';
   });
   procHTML += '</div>';
@@ -947,7 +953,7 @@ function renderProgramPage(p) {
     newStageOrder.forEach(function(key) {
       var group = newStageGroups[key];
       procHTML += '<div class="tl-row"><div class="tl-dot">+</div>' +
-        '<div><div class="tl-stage">' + group.label + '</div><div class="tl-timing">' + group.entries.length + ' report' + (group.entries.length > 1 ? "s" : "") + '</div>' +
+        '<div><div class="tl-stage">' + group.label + '</div>' + stageExplanationHtml(group.label) + '<div class="tl-timing">' + group.entries.length + ' report' + (group.entries.length > 1 ? "s" : "") + '</div>' +
         communityReportsHtml(group.entries) + '</div></div>';
     });
   }
@@ -1052,13 +1058,46 @@ function openModalFor(category) {
   document.getElementById("modalOverlay").classList.add("open");
 }
 
+// Plain-English explanations for common recruiting jargon and platform names,
+// so people who've never seen a term like "HireVue" or "Superday" before still
+// know what they're looking at. Matched case-insensitively against any part of
+// a stage name.
+var jargonGlossary = {
+  "hirevue": "a platform where you record video answers to pre-set questions, rather than talking to a live interviewer",
+  "superday": "Goldman Sachs' term for a single day of several back-to-back interviews",
+  "shl": "a company that makes the numerical/verbal reasoning tests many employers use",
+  "pymetrics": "short game-based tasks used to assess traits like risk tolerance and memory, instead of a traditional test",
+  "assessment centre": "an in-person or virtual day combining group tasks and interviews, usually a later/final stage",
+  "engagement centre": "BHP's version of an assessment day \u2014 a mix of interviews and a group activity",
+  "pei": "\"Personal Experience Interview\" \u2014 McKinsey's behavioural interview format, going deep on one story rather than asking many questions",
+  "solve assessment": "McKinsey's problem-solving game-based test",
+  "cappfinity": "a game-based online assessment platform used by some firms instead of a written test",
+  "star": "a way of structuring an answer: Situation, Task, Action, Result",
+  "cocktail evening": "an informal networking event before interviews, sometimes informally assessed",
+  "clerkship": "a paid internship at a law firm, often used as the main pathway into a graduate role there"
+};
+
+// Returns a short explanation if the stage name matches a known term, else null.
+function explainTerm(name) {
+  if (!name) return null;
+  var lower = name.toLowerCase();
+  for (var key in jargonGlossary) {
+    if (lower.indexOf(key) > -1) return jargonGlossary[key];
+  }
+  return null;
+}
+
 // Fills the "which stage" suggestions with THIS company's actual stage names
 // (curated + already community-reported) so people tag reports consistently
 // per-company, instead of choosing from one generic list that wouldn't fit
-// every company's different process.
+// every company's different process. Also shows plain-English explanations
+// for any jargon terms, since not everyone knows what "HireVue" or "Superday"
+// mean the first time they see them.
 function populateProcessStageOptions() {
   var list = document.getElementById("modalProcessStageOptions");
+  var hint = document.getElementById("modalProcessStageHint");
   list.innerHTML = "";
+  hint.innerHTML = "";
   if (!activeProgram) return;
   var names = (activeProgram.process || []).map(function(s){ return s.s; });
   (activeProgram.communityProcess || []).forEach(function(c) {
@@ -1069,6 +1108,14 @@ function populateProcessStageOptions() {
     opt.value = n;
     list.appendChild(opt);
   });
+  var explained = names
+    .map(function(n) { return { n: n, ex: explainTerm(n) }; })
+    .filter(function(x) { return x.ex; });
+  if (explained.length > 0) {
+    hint.innerHTML = explained.map(function(x) {
+      return "<strong>" + x.n + "</strong> \u2014 " + x.ex;
+    }).join("<br>");
+  }
 }
 
 function closeModal() { document.getElementById("modalOverlay").classList.remove("open"); }
