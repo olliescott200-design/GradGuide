@@ -284,6 +284,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
         <select class="ms" id="modalUni"><option value="">University...</option><option>USYD</option><option>UNSW</option><option>Melbourne</option><option>ANU</option><option>UQ</option><option>Monash</option><option>Macquarie</option><option>Other</option></select>
         <select class="ms" id="modalWam"><option value="">WAM range...</option><option>65-69</option><option>70-74</option><option>75-79</option><option>80-84</option><option>85+</option></select>
       </div>
+      <select class="ms" id="modalDegree" style="margin-top:.5rem"><option value="">Degree...</option><option>Commerce/Business</option><option>Finance/Economics</option><option>Accounting</option><option>Law</option><option>Engineering</option><option>Computer Science/IT</option><option>Science</option><option>Arts/Humanities</option><option>Mathematics/Statistics</option><option>Medicine/Health</option><option>Other</option></select>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
@@ -828,6 +829,8 @@ async function openProgram(id) {
   activeProgram.communityProcess = processRows.map(formatDbProcessEntry);
   activeProgram.communityQuestions = questionRows.map(formatDbQuestionEntry);
   activeProgram.communityReviews = reviewRows.map(formatDbReviewEntry);
+  activeProgram.communityUnis = computeFieldBreakdown(dbPosts, "university");
+  activeProgram.communityDegrees = computeFieldBreakdown(dbPosts, "degree");
   renderProgramPage(activeProgram);
 }
 
@@ -890,14 +893,37 @@ function renderProgramPage(p) {
   }).join("");
   document.getElementById("tab-feed").innerHTML = feedHTML;
 
+  var communityUnis = p.communityUnis || [];
+  var communityDegrees = p.communityDegrees || [];
+  var uniResponses = communityUnis.reduce(function(a, c) { return a + c.count; }, 0);
+  var degreeResponses = communityDegrees.reduce(function(a, c) { return a + c.count; }, 0);
+
   var ovHTML = '<div style="margin-bottom:1.5rem"><div class="section-label">Universities hired from</div>';
+  if (p.topUnis.length === 0 && communityUnis.length === 0) {
+    ovHTML += '<div style="text-align:center;padding:1.5rem 1rem;color:var(--muted);font-size:12.5px">No university data yet \u2014 be the first to share where you studied.</div>';
+  }
   p.topUnis.forEach(function(u) {
     ovHTML += '<div class="bar-row"><span class="bar-label">' + u.n + '</span><div class="bar-track"><div class="bar-fill" style="width:0%" data-w="' + u.p + '%"></div></div><span class="bar-pct">' + u.p + '%</span></div>';
   });
+  if (communityUnis.length > 0) {
+    ovHTML += '<div class="section-label" style="margin-top:1rem">Community reported (' + uniResponses + ' response' + (uniResponses > 1 ? "s" : "") + ')</div>';
+    communityUnis.forEach(function(u) {
+      ovHTML += '<div class="bar-row"><span class="bar-label">' + u.n + '</span><div class="bar-track"><div class="bar-fill" style="width:0%" data-w="' + u.p + '%"></div></div><span class="bar-pct">' + u.p + '%</span></div>';
+    });
+  }
   ovHTML += '</div><div><div class="section-label">Degrees hired from</div>';
+  if (p.topDegrees.length === 0 && communityDegrees.length === 0) {
+    ovHTML += '<div style="text-align:center;padding:1.5rem 1rem;color:var(--muted);font-size:12.5px">No degree data yet \u2014 be the first to share yours.</div>';
+  }
   p.topDegrees.forEach(function(d) {
     ovHTML += '<div class="bar-row"><span class="bar-label">' + d.n + '</span><div class="bar-track"><div class="bar-fill amber" style="width:0%" data-w="' + d.p + '%"></div></div><span class="bar-pct">' + d.p + '%</span></div>';
   });
+  if (communityDegrees.length > 0) {
+    ovHTML += '<div class="section-label" style="margin-top:1rem">Community reported (' + degreeResponses + ' response' + (degreeResponses > 1 ? "s" : "") + ')</div>';
+    communityDegrees.forEach(function(d) {
+      ovHTML += '<div class="bar-row"><span class="bar-label">' + d.n + '</span><div class="bar-track"><div class="bar-fill amber" style="width:0%" data-w="' + d.p + '%"></div></div><span class="bar-pct">' + d.p + '%</span></div>';
+    });
+  }
   ovHTML += '</div>';
   document.getElementById("tab-overview").innerHTML = ovHTML;
 
@@ -1187,6 +1213,7 @@ async function submitPost() {
   var processStage = processStageEl.value.trim();
   var uni = document.getElementById("modalUni").value;
   var wam = document.getElementById("modalWam").value;
+  var degree = document.getElementById("modalDegree").value;
   var rating = document.getElementById("modalRating").value;
   var postBtn = document.querySelector(".btn-post");
 
@@ -1194,6 +1221,7 @@ async function submitPost() {
   if (!text) { alert("Please tell us what happened."); return; }
   if (!uni) { alert("Please select your university \u2014 it's required so others can see hiring patterns."); return; }
   if (!wam) { alert("Please select your WAM range \u2014 it's required so others can see hiring patterns."); return; }
+  if (!degree) { alert("Please select your degree \u2014 it's required so others can see hiring patterns."); return; }
   if (category === "process" && !processStage) { alert("Please name which stage this is about."); return; }
 
   postBtn.disabled = true;
@@ -1207,10 +1235,15 @@ async function submitPost() {
     return;
   }
 
-  var localMatch = programs.filter(function(p) {
-    return p.company.trim().toLowerCase() === company.toLowerCase();
-  })[0];
-  var dbProgram = await createOrGetProgram(company, localMatch ? localMatch.id : null);
+  var matchResult = findBestCompanyMatch(company, programs);
+  if (matchResult && !matchResult.exact) {
+    var useExisting = confirm(
+      'Did you mean "' + matchResult.program.company + '"?\n\n' +
+      'Click OK to add your post to that company, or Cancel to create "' + company + '" as a separate new company.'
+    );
+    if (!useExisting) matchResult = null;
+  }
+  var dbProgram = await createOrGetProgram(company, matchResult ? matchResult.program.id : null);
   if (!dbProgram) {
     postBtn.disabled = false;
     postBtn.textContent = "Post anonymously";
@@ -1222,7 +1255,7 @@ async function submitPost() {
   var content = category === "feed" ? "[" + stage + "] " + text : text;
   var ratingToSave = category === "reviews" ? parseInt(rating, 10) : null;
   var stageNameToSave = category === "process" ? processStage : null;
-  await submitPostToDb(slug, content, uni, wam, category, ratingToSave, stageNameToSave);
+  await submitPostToDb(slug, content, uni, wam, category, ratingToSave, stageNameToSave, degree);
 
   var alreadyOnGrid = programs.some(function (p) { return p.id === slug; });
   if (!alreadyOnGrid) {
@@ -1237,6 +1270,7 @@ async function submitPost() {
   processStageEl.value = "";
   document.getElementById("modalUni").value = "";
   document.getElementById("modalWam").value = "";
+  document.getElementById("modalDegree").value = "";
   closeModal();
 
   await openProgram(slug);
