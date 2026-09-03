@@ -1160,7 +1160,10 @@ async function submitPost() {
     return;
   }
 
-  var dbProgram = await createOrGetProgram(company);
+  var localMatch = programs.filter(function(p) {
+    return p.company.trim().toLowerCase() === company.toLowerCase();
+  })[0];
+  var dbProgram = await createOrGetProgram(company, localMatch ? localMatch.id : null);
   if (!dbProgram) {
     postBtn.disabled = false;
     postBtn.textContent = "Post anonymously";
