@@ -47,7 +47,10 @@ async function loadPosts(programSlug) {
 // stageName only applies when category === "process" — the specific stage
 // this report is about (e.g. "HireVue Video Interview"), so reports can be
 // grouped per-company instead of forced into one generic list of stages.
-async function submitPostToDb(programSlug, content, university, wamRange, category, rating, stageName, degree) {
+// outcome only applies when category === "feed" — the actual application
+// status (Invite/Offer/Rejected/etc), stored separately so Response/Interview/
+// Offer rate can be calculated from real data instead of frozen numbers.
+async function submitPostToDb(programSlug, content, university, wamRange, category, rating, stageName, degree, outcome) {
   try {
     const { data: program, error: programErr } = await gg_supabase
       .from("programs")
@@ -72,6 +75,7 @@ async function submitPostToDb(programSlug, content, university, wamRange, catego
       category: category || "feed",
       rating: rating || null,
       stage_name: stageName || null,
+      outcome: outcome || null,
       approved: true,
     });
 
@@ -83,6 +87,25 @@ async function submitPostToDb(programSlug, content, university, wamRange, catego
   } catch (e) {
     console.error("GradGuide: submitPostToDb failed:", e);
     return { success: false, error: e.message };
+  }
+}
+
+// ---------- Increment a post's report count. Once a post crosses the
+// threshold set in the database read policy (currently 3), it's automatically
+// excluded from everyone's view — no admin action needed. ----------
+async function reportPostInDb(postId) {
+  try {
+    const { data: current } = await gg_supabase
+      .from("posts")
+      .select("flagged_count")
+      .eq("id", postId)
+      .maybeSingle();
+    const newCount = ((current && current.flagged_count) || 0) + 1;
+    await gg_supabase.from("posts").update({ flagged_count: newCount }).eq("id", postId);
+    return { success: true };
+  } catch (e) {
+    console.error("GradGuide: reportPostInDb failed:", e);
+    return { success: false };
   }
 }
 
@@ -105,15 +128,48 @@ function computeFieldBreakdown(rows, field) {
     .slice(0, 6);
 }
 
+// ---------- Compute real Response/Interview/Offer rate from actual feed posts'
+// "outcome" values, instead of the frozen static numbers the site used to show. ----------
+function computeOutcomeStats(feedRows) {
+  var counted = feedRows.filter(function (r) {
+    return r.outcome && r.outcome !== "Sharing info";
+  });
+  var total = counted.length;
+  if (total === 0) return null;
+
+  var responded = counted.filter(function (r) { return r.outcome !== "Still waiting"; }).length;
+  var interviewed = counted.filter(function (r) {
+    return r.outcome === "Invite / progressed" || r.outcome === "Received offer";
+  }).length;
+  var offered = counted.filter(function (r) { return r.outcome === "Received offer"; }).length;
+
+  return {
+    total: total,
+    responseRate: Math.round((responded / total) * 100),
+    interviewRate: Math.round((interviewed / total) * 100),
+    offerRate: Math.round((offered / total) * 100),
+  };
+}
+
 // ---------- Turn a raw database row into the feed-item shape the site uses ----------
 function formatDbPost(row) {
   var who = row.university
     ? row.university + (row.wam_range ? " \u00b7 WAM " + row.wam_range : "")
     : "Anonymous";
+  var stageMap = {
+    "Invite / progressed": { stage: "invite", label: "Invite / progressed" },
+    "Received offer": { stage: "offer", label: "Received offer" },
+    "Still waiting": { stage: "waiting", label: "Still waiting" },
+    "Rejected": { stage: "reject", label: "Rejected" },
+    "Withdrew": { stage: "update", label: "Withdrew" },
+    "Sharing info": { stage: "update", label: "Sharing info" },
+  };
+  var mapped = stageMap[row.outcome] || { stage: "update", label: "Update posted" };
   return {
+    id: row.id,
     who: who,
-    stage: "update",
-    stageLabel: "Update posted",
+    stage: mapped.stage,
+    stageLabel: mapped.label,
     time: gg_timeAgo(row.created_at),
     body: escapeHtml(row.content),
     likes: 0,
@@ -130,6 +186,7 @@ function gg_whoTag(row) {
 // ---------- Format a community-submitted process step for the Process tab ----------
 function formatDbProcessEntry(row) {
   return {
+    id: row.id,
     who: gg_whoTag(row),
     time: gg_timeAgo(row.created_at),
     body: escapeHtml(row.content),
@@ -140,6 +197,7 @@ function formatDbProcessEntry(row) {
 // ---------- Format a community-submitted interview question for the Questions tab ----------
 function formatDbQuestionEntry(row) {
   return {
+    id: row.id,
     q: escapeHtml(row.content),
     who: gg_whoTag(row),
   };
@@ -148,6 +206,7 @@ function formatDbQuestionEntry(row) {
 // ---------- Format a community-submitted review for the Reviews tab ----------
 function formatDbReviewEntry(row) {
   return {
+    id: row.id,
     who: gg_whoTag(row),
     stars: row.rating || 0,
     text: escapeHtml(row.content),
