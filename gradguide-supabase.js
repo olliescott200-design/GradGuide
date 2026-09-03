@@ -242,7 +242,7 @@ async function loadAllPrograms() {
 // program), it's used instead of re-deriving a slug from the name — this avoids
 // creating an accidental duplicate when the derived slug wouldn't match the
 // program's real slug (e.g. "Goldman Sachs" -> "goldman-sachs" vs the real "goldman").
-async function createOrGetProgram(companyName, forcedSlug) {
+async function createOrGetProgram(companyName, forcedSlug, sectors) {
   var slug = forcedSlug || slugifyCompany(companyName);
   try {
     const { data: existing } = await gg_supabase
@@ -254,7 +254,13 @@ async function createOrGetProgram(companyName, forcedSlug) {
 
     const { data: created, error: insertErr } = await gg_supabase
       .from("programs")
-      .insert({ company: companyName, role: "Graduate Program", slug: slug, industry: "Other" })
+      .insert({
+        company: companyName,
+        role: "Graduate Program",
+        slug: slug,
+        industry: (sectors && sectors[0]) || "Other",
+        industries: (sectors && sectors.length) ? sectors : ["Other"],
+      })
       .select()
       .single();
 
