@@ -854,6 +854,8 @@ async function openProgram(id) {
   activeProgram.communityReviews = reviewRows.map(formatDbReviewEntry);
   activeProgram.communityUnis = computeFieldBreakdown(dbPosts, "university");
   activeProgram.communityDegrees = computeFieldBreakdown(dbPosts, "degree");
+  activeProgram.realSubmissions = dbPosts.length;
+  activeProgram.realStats = computeOutcomeStats(feedRows);
   renderProgramPage(activeProgram);
 }
 
@@ -874,22 +876,33 @@ function stars(n) {
 }
 
 function renderProgramPage(p) {
+  var realSubs = (typeof p.realSubmissions === "number") ? p.realSubmissions : p.submissions;
   document.getElementById("ppHeader").innerHTML =
     '<div class="pph-top"><div class="pph-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
     '<div><div class="pph-name">' + p.company + '</div><div class="pph-sub">' + p.role + ' \u00b7 ' + p.location + '</div></div></div>' +
     '<div class="pph-tags"><span class="pph-tag" style="color:var(--accent);border-color:var(--accent)">\uD83D\uDFE2 Applications open — check careers page</span>' +
-    '<span class="pph-tag">' + (p.submissions > 0 ? p.submissions + ' submissions' : 'No submissions yet') + '</span><span class="pph-tag">' + p.salary + '</span>' + programSectors(p).map(function(s){ return '<span class="pph-tag">' + s + '</span>'; }).join("") + '</div>';
+    '<span class="pph-tag">' + (realSubs > 0 ? realSubs + ' submissions' : 'No submissions yet') + '</span><span class="pph-tag">' + p.salary + '</span>' + programSectors(p).map(function(s){ return '<span class="pph-tag">' + s + '</span>'; }).join("") + '</div>';
 
+  var realStats = p.realStats;
+  var hasCurated = p.avgDays > 0;
   var statsHTML;
-  if (p.submissions >= 10) {
+  if (realStats && realStats.total >= 3) {
     statsHTML =
+      '<div style="grid-column:span 4;font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Based on ' + realStats.total + ' real report' + (realStats.total > 1 ? "s" : "") + '</div>' +
+      '<div class="stat-card"><span class="stat-val">' + realStats.responseRate + '%</span><div class="stat-label">Response rate</div></div>' +
+      '<div class="stat-card"><span class="stat-val">' + realStats.interviewRate + '%</span><div class="stat-label">Interview rate</div></div>' +
+      '<div class="stat-card"><span class="stat-val">' + realStats.offerRate + '%</span><div class="stat-label">Offer rate</div></div>' +
+      '<div class="stat-card"><span class="stat-val">' + realStats.total + '</span><div class="stat-label">Total reports</div></div>';
+  } else if (hasCurated) {
+    statsHTML =
+      '<div style="grid-column:span 4;font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Estimated \u2014 based on background research, not yet enough real reports</div>' +
       '<div class="stat-card"><span class="stat-val">' + p.responseRate + '%</span><div class="stat-label">Response rate</div></div>' +
       '<div class="stat-card"><span class="stat-val">' + p.interviewRate + '%</span><div class="stat-label">Interview rate</div></div>' +
       '<div class="stat-card"><span class="stat-val">' + p.offerRate + '%</span><div class="stat-label">Offer rate</div></div>' +
       '<div class="stat-card"><span class="stat-val">' + p.avgDays + 'd</span><div class="stat-label">Avg. days to response</div></div>';
   } else {
     statsHTML = '<div style="grid-column:span 4;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;font-size:13px;color:var(--muted)">' +
-      'Stats like response rate and offer rate will appear here once enough people share their experience with this program. <span style="color:var(--accent);cursor:pointer" onclick="document.querySelector(\'textarea\').focus()">Add yours \u2192</span></div>';
+      'Stats like response rate and offer rate will appear here once enough people share their experience with this program. <span style="color:var(--accent);cursor:pointer" onclick="openModalFor(\'feed\')">Add yours \u2192</span></div>';
   }
   document.getElementById("ppStats").innerHTML = statsHTML;
 
@@ -911,6 +924,7 @@ function renderProgramPage(p) {
       '<div class="fi-footer">' +
         '<button class="fi-action" onclick="like(this)">\u2661 <span>' + f.likes + '</span></button>' +
         '<button class="fi-action">\uD83D\uDCAC reply</button>' +
+        (f.id ? '<button class="fi-action" onclick="reportPost(\'' + f.id + '\', this)">\uD83D\uDEA9 report</button>' : '') +
         '<button class="me-too' + (f.metoo > 0 && f.stage === "waiting" ? " active" : "") + '" onclick="metoo(this)">+ me too <span class="mt-count">' + f.metoo + '</span></button>' +
       '</div></div>';
   }).join("");
@@ -957,7 +971,8 @@ function renderProgramPage(p) {
     return '<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--border)">' +
       '<div style="font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Community reports (' + entries.length + ')</div>' +
       entries.map(function(c) {
-        return '<div style="margin-bottom:.35rem"><span style="font-family:var(--mono);font-size:11px;color:var(--muted)">' + c.who + '</span> \u2014 ' + c.body + '</div>';
+        return '<div style="margin-bottom:.35rem;display:flex;justify-content:space-between;gap:.5rem"><span><span style="font-family:var(--mono);font-size:11px;color:var(--muted)">' + c.who + '</span> \u2014 ' + c.body + '</span>' +
+          (c.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;white-space:nowrap" onclick="reportPost(\'' + c.id + '\', this)">\uD83D\uDEA9</button>' : '') + '</div>';
       }).join("") + '</div>';
   }
 
@@ -1023,6 +1038,7 @@ function renderProgramPage(p) {
     qHTML += '<div class="section-label" style="margin-top:1rem">Community reports</div>' + communityQuestions.map(function(q) {
       return '<div class="q-item"><div class="q-text">\u201c' + q.q + '\u201d</div>' +
         '<div class="q-row"><span class="q-tag">' + q.who + '</span>' +
+        (q.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;margin-right:.4rem" onclick="reportPost(\'' + q.id + '\', this)">\uD83D\uDEA9</button>' : '') +
         '<button class="q-votes" onclick="var n=parseInt(this.innerHTML.replace(\'&#9650; \',\'\'))+1;this.innerHTML=\'&#9650; \'+n;this.style.color=\'var(--accent)\'">\u25b2 0</button></div></div>';
     }).join("");
   }
@@ -1038,7 +1054,9 @@ function renderProgramPage(p) {
   }
   if (communityReviews.length > 0) {
     rHTML += '<div class="section-label" style="margin-top:1rem">Community reports</div>' + communityReviews.map(function(r) {
-      return '<div class="review-item"><div class="review-header"><span class="review-who">' + r.who + '</span><span class="review-stars">' + stars(r.stars) + '</span></div><div class="review-text">' + r.text + '</div></div>';
+      return '<div class="review-item"><div class="review-header"><span class="review-who">' + r.who + '</span><span class="review-stars">' + stars(r.stars) + '</span>' +
+        (r.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer" onclick="reportPost(\'' + r.id + '\', this)">\uD83D\uDEA9 report</button>' : '') +
+        '</div><div class="review-text">' + r.text + '</div></div>';
     }).join("");
   }
   rHTML += '<div style="text-align:center;margin-top:.5rem"><button style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.5rem 1.2rem;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer" onclick="openModalFor(\'reviews\')">Write a review</button></div>';
@@ -1072,6 +1090,19 @@ function metoo(btn) {
   var c = btn.querySelector(".mt-count");
   btn.classList.toggle("active");
   c.textContent = parseInt(c.textContent) + (btn.classList.contains("active") ? 1 : -1);
+}
+
+// Reports a post. Once a post crosses the report threshold (set in the
+// database's read policy), it's automatically hidden from everyone — no
+// admin has to act in real time for obviously bad content to disappear.
+async function reportPost(postId, btn) {
+  if (btn.disabled) return;
+  btn.disabled = true;
+  var original = btn.textContent;
+  btn.textContent = "\u2026";
+  await reportPostInDb(postId);
+  btn.textContent = "Reported";
+  btn.style.color = "var(--red)";
 }
 
 async function moderatePost(text, company) {
@@ -1277,10 +1308,11 @@ async function submitPost() {
   }
 
   var slug = dbProgram.slug;
-  var content = category === "feed" ? "[" + stage + "] " + text : text;
+  var content = text;
   var ratingToSave = category === "reviews" ? parseInt(rating, 10) : null;
   var stageNameToSave = category === "process" ? processStage : null;
-  await submitPostToDb(slug, content, uni, wam, category, ratingToSave, stageNameToSave, degree);
+  var outcomeToSave = category === "feed" ? stage : null;
+  await submitPostToDb(slug, content, uni, wam, category, ratingToSave, stageNameToSave, degree, outcomeToSave);
 
   var alreadyOnGrid = programs.some(function (p) { return p.id === slug; });
   if (!alreadyOnGrid) {
