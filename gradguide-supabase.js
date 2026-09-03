@@ -47,7 +47,7 @@ async function loadPosts(programSlug) {
 // stageName only applies when category === "process" — the specific stage
 // this report is about (e.g. "HireVue Video Interview"), so reports can be
 // grouped per-company instead of forced into one generic list of stages.
-async function submitPostToDb(programSlug, content, university, wamRange, category, rating, stageName) {
+async function submitPostToDb(programSlug, content, university, wamRange, category, rating, stageName, degree) {
   try {
     const { data: program, error: programErr } = await gg_supabase
       .from("programs")
@@ -68,6 +68,7 @@ async function submitPostToDb(programSlug, content, university, wamRange, catego
       content: content,
       university: university || null,
       wam_range: wamRange || null,
+      degree: degree || null,
       category: category || "feed",
       rating: rating || null,
       stage_name: stageName || null,
@@ -83,6 +84,25 @@ async function submitPostToDb(programSlug, content, university, wamRange, catego
     console.error("GradGuide: submitPostToDb failed:", e);
     return { success: false, error: e.message };
   }
+}
+
+// ---------- Aggregate a field (university or degree) across all real posts for
+// a program into a percentage breakdown, ignoring posts that left it blank.
+// This is what makes the Uni & Degree Data tab real instead of frozen numbers. ----------
+function computeFieldBreakdown(rows, field) {
+  var counts = {};
+  var total = 0;
+  rows.forEach(function (r) {
+    var val = r[field];
+    if (!val) return;
+    counts[val] = (counts[val] || 0) + 1;
+    total++;
+  });
+  if (total === 0) return [];
+  return Object.keys(counts)
+    .map(function (k) { return { n: k, p: Math.round((counts[k] / total) * 100), count: counts[k] }; })
+    .sort(function (a, b) { return b.count - a.count; })
+    .slice(0, 6);
 }
 
 // ---------- Turn a raw database row into the feed-item shape the site uses ----------
@@ -144,6 +164,63 @@ function slugifyCompany(name) {
   return slug || "company";
 }
 
+// ---------- Normalize a company name for matching (strips casing, punctuation,
+// and common corporate suffixes so "Kookaburra Digital Pty Ltd" and
+// "kookaburra digital" are recognised as the same company) ----------
+function normalizeCompanyName(name) {
+  return name
+    .toLowerCase()
+    .replace(/\b(pty|ltd|limited|inc|incorporated|group|australia|holdings|corp|corporation)\b/g, "")
+    .replace(/[^a-z0-9]+/g, "")
+    .trim();
+}
+
+// ---------- Levenshtein edit distance between two strings (counts the
+// single-character insertions/deletions/substitutions needed to turn one
+// into the other — used to catch typos like a missing letter) ----------
+function levenshteinDistance(a, b) {
+  var m = a.length, n = b.length;
+  var dp = [];
+  for (var i = 0; i <= m; i++) dp.push([i]);
+  for (var j = 0; j <= n; j++) dp[0][j] = j;
+  for (i = 1; i <= m; i++) {
+    for (j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+// ---------- Find the closest existing local program to a typed company name ----------
+// Returns { program, exact: true } for a clean match (including suffix/casing
+// differences), { program, exact: false } for a likely-typo fuzzy match that
+// should be confirmed with the person before using, or null for no match.
+function findBestCompanyMatch(typedName, localPrograms) {
+  var typedNorm = normalizeCompanyName(typedName);
+  if (!typedNorm) return null;
+
+  for (var i = 0; i < localPrograms.length; i++) {
+    if (normalizeCompanyName(localPrograms[i].company) === typedNorm) {
+      return { program: localPrograms[i], exact: true };
+    }
+  }
+
+  var best = null, bestDist = Infinity;
+  localPrograms.forEach(function (p) {
+    var norm = normalizeCompanyName(p.company);
+    if (!norm) return;
+    var dist = levenshteinDistance(typedNorm, norm);
+    var threshold = Math.max(1, Math.floor(Math.max(typedNorm.length, norm.length) * 0.2));
+    if (dist <= threshold && dist < bestDist) {
+      best = p;
+      bestDist = dist;
+    }
+  });
+  return best ? { program: best, exact: false } : null;
+}
+
 // ---------- Load every program row from Supabase (used to merge into the homepage grid) ----------
 async function loadAllPrograms() {
   try {
@@ -161,6 +238,10 @@ async function loadAllPrograms() {
 
 // ---------- Find a program by company name, or create it if it doesn't exist yet ----------
 // This is what lets someone post about a company that isn't one of the 11 pre-built pages.
+// If forcedSlug is given (because the caller already matched this to a known local
+// program), it's used instead of re-deriving a slug from the name — this avoids
+// creating an accidental duplicate when the derived slug wouldn't match the
+// program's real slug (e.g. "Goldman Sachs" -> "goldman-sachs" vs the real "goldman").
 async function createOrGetProgram(companyName, forcedSlug) {
   var slug = forcedSlug || slugifyCompany(companyName);
   try {
