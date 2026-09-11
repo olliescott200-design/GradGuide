@@ -44,32 +44,33 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .prog-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.1rem;cursor:pointer;transition:border-color .15s,transform .12s;position:relative;overflow:hidden}
 .prog-card:hover{border-color:var(--border2);transform:translateY(-1px)}
 .pc-top{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:.85rem}
-.pc-logo{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:500;flex-shrink:0}
+.pc-logo{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
 .pc-title{font-size:14px;font-weight:500;margin-bottom:.1rem;line-height:1.3}
 .pc-role{font-size:12px;color:var(--muted);line-height:1.35}
-.pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.85rem}
-.pc-stat{background:var(--bg);border-radius:6px;padding:.45rem .5rem;text-align:center}
-.pc-val{font-family:var(--mono);font-size:13px;font-weight:500;display:block;color:var(--text)}
-.pc-label{font-size:10px;color:var(--muted2);margin-top:.1rem}
+.pc-stats{display:flex;gap:1.1rem;margin-bottom:.85rem;padding-top:.7rem;border-top:1px solid var(--border)}
+.pc-stat{text-align:left}
+.pc-val{font-size:14px;font-weight:500;display:block;color:var(--text)}
+.pc-label{font-size:10.5px;color:var(--muted2);margin-top:.1rem}
 .pc-footer{display:flex;align-items:center;justify-content:space-between}
 .pc-tags{display:flex;gap:.3rem;flex-wrap:wrap}
 .pc-tag{font-size:11px;padding:.12rem .5rem;border-radius:100px;border:1px solid var(--border);color:var(--muted)}
-.pc-activity{font-family:var(--mono);font-size:10.5px;color:var(--muted2)}
-.hot-badge{position:absolute;top:.75rem;right:.75rem;font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;background:var(--accent-light);color:var(--accent);border-radius:3px;padding:.1rem .45rem}
+.pc-activity{font-size:10.5px;color:var(--muted2)}
+.hot-badge{position:absolute;top:.75rem;right:.75rem;font-size:9.5px;letter-spacing:.02em;background:var(--accent-light);color:var(--accent);border-radius:3px;padding:.1rem .45rem}
 #program-page{max-width:1080px;margin:0 auto;padding:2rem;display:none}
 .back-btn{display:inline-flex;align-items:center;gap:.4rem;font-size:13px;color:var(--muted);cursor:pointer;margin-bottom:1.25rem;background:none;border:none;font-family:var(--sans);padding:0;transition:color .15s}
 .back-btn:hover{color:var(--text)}
 .prog-page-header{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem}
 .pph-top{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
-.pph-logo{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:500;flex-shrink:0}
+.pph-logo{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
 .pph-name{font-size:18px;font-weight:500;margin-bottom:.15rem}
 .pph-sub{font-size:13px;color:var(--muted)}
 .pph-tags{display:flex;gap:.4rem;flex-wrap:wrap}
 .pph-tag{font-size:11.5px;padding:.18rem .6rem;border-radius:100px;border:1px solid var(--border);color:var(--muted)}
-.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1rem}
-.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.85rem;text-align:center}
-.stat-val{font-family:var(--mono);font-size:1.3rem;font-weight:500;display:block;color:var(--text)}
-.stat-label{font-size:10.5px;color:var(--muted);margin-top:.2rem}
+.stat-row{display:flex;align-items:baseline;flex-wrap:wrap;margin-bottom:1.25rem;padding:.95rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stat-card{flex:1;min-width:120px;padding:0 1.25rem;border-left:1px solid var(--border)}
+.stat-card:first-child{border-left:none;padding-left:0}
+.stat-val{font-size:1.5rem;font-weight:500;display:block;color:var(--text)}
+.stat-label{font-size:12px;color:var(--muted);margin-top:.2rem}
 .prog-layout{display:grid;grid-template-columns:1fr 300px;gap:1rem;align-items:start}
 .tabs{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:10px 10px 0 0;padding:0 1rem;overflow-x:auto}
 .tab-btn{padding:.7rem 1rem;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans);white-space:nowrap}
@@ -81,27 +82,27 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .tab-content{background:var(--surface2);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:1.1rem}
 .post-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.9rem;margin-bottom:.6rem}
 .pb-inner{display:flex;gap:.65rem;align-items:flex-start;margin-bottom:.65rem}
-.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);font-weight:500;flex-shrink:0;font-family:var(--mono)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);font-weight:500;flex-shrink:0}
 .post-input{flex:1;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;padding:.55rem .75rem;outline:none;resize:none;line-height:1.5;width:100%}
 .post-input:focus{border-color:var(--border2)}
 .post-input::placeholder{color:var(--muted2)}
 .pb-footer{display:flex;justify-content:space-between;align-items:center}
 .pb-hint{font-size:11.5px;color:var(--muted2)}
 .pb-submit{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:.35rem .9rem;font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer}
-.feed-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.95rem;margin-bottom:.5rem;transition:border-color .15s}
-.feed-item:hover{border-color:var(--border2)}
+.feed-item{border-bottom:1px solid var(--border);padding:.95rem 0;transition:background .15s}
+.feed-item:first-child{padding-top:0}
 .fi-top{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:.55rem}
 .fi-meta{flex:1;display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
-.fi-who{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.fi-who{font-size:11px;color:var(--muted)}
 .fi-stage{font-size:11.5px;padding:.1rem .5rem;border-radius:100px}
 .stage-offer{background:#e6f5ec;color:#1e6b3a}
 .stage-invite{background:var(--blue-light);color:var(--blue)}
 .stage-reject{background:var(--red-light);color:var(--red)}
 .stage-waiting{background:var(--amber-light);color:var(--amber)}
 .stage-update{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
-.fi-time{font-family:var(--mono);font-size:10.5px;color:var(--muted2);margin-left:auto;white-space:nowrap}
+.fi-time{font-size:10.5px;color:var(--muted2);margin-left:auto;white-space:nowrap}
 .fi-body{font-size:13px;color:var(--text);line-height:1.55;padding-left:2.35rem}
-.fi-footer{display:flex;align-items:center;gap:.85rem;padding-left:2.35rem;margin-top:.55rem;padding-top:.55rem;border-top:1px solid var(--border)}
+.fi-footer{display:flex;align-items:center;gap:.85rem;padding-left:2.35rem;margin-top:.55rem;padding-top:.55rem}
 .fi-action{display:flex;align-items:center;gap:.25rem;font-size:12px;color:var(--muted);cursor:pointer;transition:color .12s;background:none;border:none;font-family:var(--sans);padding:0}
 .fi-action:hover{color:var(--text)}
 .fi-action.liked{color:var(--accent)}
@@ -113,7 +114,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .bar-fill{height:100%;border-radius:100px;background:var(--accent);transition:width 1s cubic-bezier(.16,1,.3,1)}
 .bar-fill.amber{background:var(--amber)}
 .bar-pct{font-family:var(--mono);font-size:11px;color:var(--muted);width:28px;text-align:right}
-.section-label{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem}
+.section-label{font-size:14px;font-weight:500;color:var(--text);margin-bottom:.75rem}
 .tl-row{display:flex;align-items:flex-start;gap:.75rem;position:relative;padding-bottom:.85rem}
 .tl-row:not(:last-child)::after{content:'';position:absolute;left:9px;top:20px;bottom:0;width:1px;background:var(--border)}
 .tl-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;z-index:1}
@@ -128,15 +129,17 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .q-tag{font-size:10.5px;padding:.1rem .45rem;border-radius:3px;background:var(--bg);color:var(--muted);border:1px solid var(--border)}
 .q-votes{font-family:var(--mono);font-size:11px;color:var(--muted2);margin-left:auto;cursor:pointer;background:none;border:none}
 .q-votes:hover{color:var(--accent)}
-.review-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.85rem;margin-bottom:.6rem}
+.review-item{padding:.85rem 0;border-bottom:1px solid var(--border)}
+.review-item:last-child{border-bottom:none}
 .review-header{display:flex;justify-content:space-between;margin-bottom:.4rem}
 .review-who{font-size:12.5px;font-weight:500}
 .review-stars{color:var(--amber);font-size:12px}
 .review-text{font-size:13px;color:var(--muted);line-height:1.55}
-.widget{background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:.75rem;overflow:hidden}
-.widget-head{padding:.65rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.widget-title{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.widget-body{padding:.85rem 1rem}
+.widget{margin-bottom:1.5rem}
+.widget + .widget{border-top:1px solid var(--border);padding-top:1.25rem}
+.widget-head{margin-bottom:.6rem;display:flex;align-items:center;justify-content:space-between}
+.widget-title{font-size:14px;font-weight:500;color:var(--text)}
+.widget-body{}
 .open-row{display:flex;align-items:center;gap:.55rem;padding:.45rem 0;border-bottom:1px solid var(--border)}
 .open-row:last-child{border-bottom:none}
 .open-dot-sm{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
@@ -206,7 +209,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 <div id="program-page">
   <button class="back-btn" onclick="goHome()">&#8592; All programs</button>
   <div class="prog-page-header" id="ppHeader"></div>
-  <div class="stat-row" id="ppStats"></div>
+  <div id="ppStats"></div>
   <div class="prog-layout">
     <div>
       <div class="tabs">
@@ -812,7 +815,7 @@ function renderCards(list) {
           '<div class="pc-stat"><span class="pc-val">' + p.avgDays + 'd</span><div class="pc-label">avg response</div></div>' +
           '<div class="pc-stat"><span class="pc-val">' + p.offerRate + '%</span><div class="pc-label">offer rate</div></div>'
         :
-          '<div class="pc-stat" style="grid-column:span 3;text-align:left;padding:.35rem .5rem"><span style="font-size:11.5px;color:var(--muted)">Stats will appear once enough people share their experience.</span></div>'
+          '<span style="font-size:11.5px;color:var(--muted)">Stats will appear once enough people share their experience.</span>'
         ) +
       '</div>' +
       '<div class="pc-footer"><div class="pc-tags">' + programSectors(p).map(function(s){ return '<span class="pc-tag">' + s + '</span>'; }).join("") + '<span class="pc-tag">' + p.location + '</span></div>' +
@@ -892,20 +895,24 @@ function renderProgramPage(p) {
   var statsHTML;
   if (realStats && realStats.total >= 3) {
     statsHTML =
-      '<div style="grid-column:span 4;font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Based on ' + realStats.total + ' real report' + (realStats.total > 1 ? "s" : "") + '</div>' +
+      '<div style="font-size:12.5px;color:var(--muted2);margin-bottom:.5rem">Based on ' + realStats.total + ' real report' + (realStats.total > 1 ? "s" : "") + '</div>' +
+      '<div class="stat-row">' +
       '<div class="stat-card"><span class="stat-val">' + realStats.responseRate + '%</span><div class="stat-label">Response rate</div></div>' +
       '<div class="stat-card"><span class="stat-val">' + realStats.interviewRate + '%</span><div class="stat-label">Interview rate</div></div>' +
       '<div class="stat-card"><span class="stat-val">' + realStats.offerRate + '%</span><div class="stat-label">Offer rate</div></div>' +
-      '<div class="stat-card"><span class="stat-val">' + realStats.total + '</span><div class="stat-label">Total reports</div></div>';
+      '<div class="stat-card"><span class="stat-val">' + realStats.total + '</span><div class="stat-label">Total reports</div></div>' +
+      '</div>';
   } else if (hasCurated) {
     statsHTML =
-      '<div style="grid-column:span 4;font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Estimated \u2014 based on background research, not yet enough real reports</div>' +
+      '<div style="font-size:12.5px;color:var(--muted2);margin-bottom:.5rem">Estimated \u2014 based on background research, not yet enough real reports</div>' +
+      '<div class="stat-row">' +
       '<div class="stat-card"><span class="stat-val">' + p.responseRate + '%</span><div class="stat-label">Response rate</div></div>' +
       '<div class="stat-card"><span class="stat-val">' + p.interviewRate + '%</span><div class="stat-label">Interview rate</div></div>' +
       '<div class="stat-card"><span class="stat-val">' + p.offerRate + '%</span><div class="stat-label">Offer rate</div></div>' +
-      '<div class="stat-card"><span class="stat-val">' + p.avgDays + 'd</span><div class="stat-label">Avg. days to response</div></div>';
+      '<div class="stat-card"><span class="stat-val">' + p.avgDays + 'd</span><div class="stat-label">Avg. days to response</div></div>' +
+      '</div>';
   } else {
-    statsHTML = '<div style="grid-column:span 4;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;font-size:13px;color:var(--muted)">' +
+    statsHTML = '<div style="padding:.95rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:1.25rem;font-size:13px;color:var(--muted)">' +
       'Stats like response rate and offer rate will appear here once enough people share their experience with this program. <span style="color:var(--accent);cursor:pointer" onclick="openModalFor(\'feed\')">Add yours \u2192</span></div>';
   }
   document.getElementById("ppStats").innerHTML = statsHTML;
@@ -973,9 +980,9 @@ function renderProgramPage(p) {
 
   function communityReportsHtml(entries) {
     return '<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--border)">' +
-      '<div style="font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem">Community reports (' + entries.length + ')</div>' +
+      '<div style="font-size:11px;color:var(--muted2);margin-bottom:.35rem">Community reports (' + entries.length + ')</div>' +
       entries.map(function(c) {
-        return '<div style="margin-bottom:.35rem;display:flex;justify-content:space-between;gap:.5rem"><span><span style="font-family:var(--mono);font-size:11px;color:var(--muted)">' + c.who + '</span> \u2014 ' + c.body + '</span>' +
+        return '<div style="margin-bottom:.35rem;display:flex;justify-content:space-between;gap:.5rem"><span><span style="font-size:11px;color:var(--muted)">' + c.who + '</span> \u2014 ' + c.body + '</span>' +
           (c.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;white-space:nowrap" onclick="reportPost(\'' + c.id + '\', this)">\uD83D\uDEA9</button>' : '') + '</div>';
       }).join("") + '</div>';
   }
