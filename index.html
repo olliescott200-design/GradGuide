@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GradGuide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#f5f3ee;--surface:#faf9f6;--surface2:#ffffff;--border:#e2dfd8;--border2:#cdc9c0;
-  --text:#1a1916;--muted:#888680;--muted2:#b5b2aa;--accent:#2a5a3b;--accent-light:#e8f0eb;
-  --amber:#c17d2a;--amber-light:#fdf3e3;--red:#b54040;--red-light:#fdeaea;
+  --bg:#eeece4;--surface:#f8f7f2;--surface2:#ffffff;--border:#dedad0;--border2:#c8c3b6;
+  --text:#191a1c;--muted:#84837e;--muted2:#b3b0a7;--accent:#233a52;--accent-light:#e7ebef;
+  --amber:#a8672a;--amber-light:#fbf1e3;--red:#a83e3e;--red-light:#fbeaea;
   --blue:#2a4a7a;--blue-light:#e8edf5;
-  --mono:'DM Mono',monospace;--serif:'Instrument Serif',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono',monospace;--serif:'Source Serif 4',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;min-height:100vh}
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55;min-height:100vh}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .logo{font-family:var(--serif);font-size:1.25rem;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:.5rem;cursor:pointer}
 .logo-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block}
 .nav-right{display:flex;align-items:center;gap:.75rem}
@@ -24,31 +24,27 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .nav-link:hover{color:var(--text)}
 .post-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.4rem 1rem;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s}
 .post-btn:hover{opacity:.88}
-.season-banner{background:var(--accent);color:#fff;padding:.5rem 2rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;font-size:12.5px}
-.season-pill{display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.15);border-radius:100px;padding:.18rem .65rem;font-size:12px}
-.pulse{width:6px;height:6px;background:#6ee7b7;border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;display:inline-block}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-#home{max-width:1080px;margin:0 auto;padding:2rem}
+#home{max-width:1080px;margin:0 auto;padding:2.25rem 2rem}
 .home-header{margin-bottom:2rem}
-.home-header h1{font-family:var(--serif);font-size:2rem;font-style:italic;font-weight:400;letter-spacing:-.02em;margin-bottom:.35rem}
+.home-header h1{font-family:var(--serif);font-size:2.4rem;font-weight:600;letter-spacing:-.01em;margin-bottom:.5rem}
 .home-header p{color:var(--muted);font-size:14px;max-width:480px}
 .search-row{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
 .search-wrap{position:relative;flex:1;min-width:200px;max-width:340px}
-.search-wrap input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--sans);font-size:13.5px;padding:.55rem .85rem .55rem 2.2rem;outline:none}
+.search-wrap input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--sans);font-size:14.5px;padding:.65rem .85rem .65rem 2.3rem;outline:none}
 .search-wrap input::placeholder{color:var(--muted2)}
 .search-icon{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted2);font-size:14px;pointer-events:none}
-.pill{padding:.3rem .85rem;border-radius:100px;border:1px solid var(--border2);font-size:12.5px;color:var(--muted);cursor:pointer;background:transparent;font-family:var(--sans);transition:all .12s;white-space:nowrap}
+.pill{padding:.4rem .95rem;border-radius:100px;border:1px solid var(--border2);font-size:13px;color:var(--muted);cursor:pointer;background:transparent;font-family:var(--sans);transition:all .12s;white-space:nowrap}
 .pill:hover{border-color:var(--text);color:var(--text)}
 .pill.on{background:var(--text);color:var(--bg);border-color:var(--text)}
 .prog-grid{display:flex;flex-direction:column}
-.prog-card{display:flex;align-items:center;gap:1.25rem;padding:1rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.prog-card{display:flex;align-items:center;gap:1.5rem;padding:1.4rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
 .prog-grid .prog-card:first-child{padding-top:0}
 .prog-card:hover{background:var(--surface)}
-.pc-logo{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.pc-logo{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
 .pc-main{flex:1 1 220px;min-width:180px}
 .pc-title-row{display:flex;align-items:center;gap:.5rem}
-.pc-title{font-size:14px;font-weight:500;line-height:1.3}
-.pc-role{font-size:12px;color:var(--muted);line-height:1.35;margin-top:.1rem}
+.pc-title{font-size:16px;font-weight:500;line-height:1.3}
+.pc-role{font-size:13px;color:var(--muted);line-height:1.35;margin-top:.15rem}
 .pc-tags{display:flex;gap:.3rem;flex-wrap:wrap;flex-shrink:0}
 .pc-tag{font-size:11px;padding:.12rem .5rem;border-radius:100px;border:1px solid var(--border);color:var(--muted);white-space:nowrap}
 .pc-right{font-size:12px;color:var(--muted);flex-shrink:0;min-width:150px;text-align:right;white-space:nowrap}
@@ -119,6 +115,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .tl-stage{font-size:13px;font-weight:500;margin-bottom:.1rem}
 .tl-timing{font-family:var(--mono);font-size:11px;color:var(--accent)}
 .tl-sub{font-size:12px;color:var(--muted);margin-top:.15rem;line-height:1.45}
+.tl-funnel{height:4px;background:var(--bg);border-radius:100px;overflow:hidden;margin:.45rem 0 .5rem;max-width:220px}
+.tl-funnel-bar{height:100%;background:var(--accent);opacity:.5;border-radius:100px;transition:width .6s ease}
 .q-item{padding:.65rem 0;border-bottom:1px solid var(--border)}
 .q-item:last-child{border-bottom:none}
 .q-text{font-size:13px;color:var(--text);margin-bottom:.3rem;line-height:1.45}
@@ -145,7 +143,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .modal-overlay{position:fixed;inset:0;background:rgba(26,25,22,.5);z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem}
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;width:100%;max-width:500px;padding:1.4rem;animation:fadeIn .2s ease}
-.modal-title{font-family:var(--serif);font-size:1.2rem;font-style:italic;margin-bottom:.85rem}
+.modal-title{font-family:var(--serif);font-size:1.3rem;margin-bottom:.85rem}
 .anon-bar{display:flex;align-items:center;gap:.45rem;background:var(--accent-light);border-radius:6px;padding:.5rem .7rem;margin-bottom:.9rem;font-size:12px;color:var(--accent)}
 .mf{margin-bottom:.75rem}
 .ml{font-size:11.5px;color:var(--muted);margin-bottom:.3rem}
@@ -176,15 +174,10 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
   </div>
 </nav>
 
-<div class="season-banner">
-  <span class="season-pill"><span class="pulse"></span> 2026 grad season open</span>
-  <span>2026 graduate season &middot; Check each company careers page for current dates</span>
-</div>
-
 <div id="home">
   <div class="home-header">
     <h1>Find your program.</h1>
-    <p>Real data from real grads &#8212; response rates, interview questions, who gets hired, and what&#8217;s happening right now.</p>
+    <p style="font-size:15px">Response rates, interview questions, who gets hired, and what's happening right now, sourced from real applicants.</p>
   </div>
   <div class="search-row">
     <div class="search-wrap">
@@ -228,11 +221,11 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
       <div class="widget">
         <div class="widget-head"><span class="widget-title">Applications</span></div>
         <div class="widget-body">
-          <div style="font-size:12.5px;color:var(--muted);line-height:1.6">Always check each company&#8217;s careers page directly for current opening and closing dates &#8212; dates change each year and vary by stream.</div>
+          <div style="font-size:12.5px;color:var(--muted);line-height:1.6">Always check each company's careers page directly for current dates. They change every year and vary by stream.</div>
         </div>
       </div>
       <div class="widget">
-        <div class="widget-head"><span class="widget-title">Today <span class="pulse"></span></span></div>
+        <div class="widget-head"><span class="widget-title">Today</span></div>
         <div class="widget-body">
           <div style="font-size:12.5px;color:var(--muted);line-height:1.6">Live activity will appear here as grads post their updates. Be the first to share your experience.</div>
         </div>
@@ -244,7 +237,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-title">Post an update</div>
-    <div class="anon-bar">&#128274; Posted anonymously &#8212; only your uni and WAM range are shown.</div>
+    <div class="anon-bar">Posted anonymously. Only your uni and WAM range are shown.</div>
     <div class="mf"><div class="ml">What are you sharing?</div>
       <select class="ms" id="modalCategory" onchange="toggleCategoryFields()">
         <option value="feed">A quick update (Live Feed)</option>
@@ -804,7 +797,7 @@ function renderCards(list) {
   grid.innerHTML = list.map(function(p) {
     var rightText = p.submissions >= 10
       ? p.responseRate + '% response \u00b7 ' + p.offerRate + '% offer'
-      : (p.submissions > 0 ? p.submissions + ' submissions' : 'No submissions yet');
+      : (p.submissions > 0 ? p.submissions + ' submissions' : '');
     return '<div class="prog-card" onclick="openProgram(\'' + p.id + '\')">' +
       '<div class="pc-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
       '<div class="pc-main">' +
@@ -877,12 +870,16 @@ function stars(n) {
 }
 
 function renderProgramPage(p) {
+  var pageEl = document.getElementById("program-page");
+  pageEl.style.setProperty("--accent", p.color);
+  pageEl.style.setProperty("--accent-light", p.bg);
+  document.getElementById("ppHeader").style.borderTop = "3px solid " + p.color;
   var realSubs = (typeof p.realSubmissions === "number") ? p.realSubmissions : p.submissions;
   document.getElementById("ppHeader").innerHTML =
     '<div class="pph-top"><div class="pph-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
     '<div><div class="pph-name">' + p.company + '</div><div class="pph-sub">' + p.role + ' \u00b7 ' + p.location + '</div></div></div>' +
-    '<div class="pph-tags"><span class="pph-tag" style="color:var(--accent);border-color:var(--accent)">\uD83D\uDFE2 Applications open — check careers page</span>' +
-    '<span class="pph-tag">' + (realSubs > 0 ? realSubs + ' submissions' : 'No submissions yet') + '</span><span class="pph-tag">' + p.salary + '</span>' + programSectors(p).map(function(s){ return '<span class="pph-tag">' + s + '</span>'; }).join("") + '</div>';
+    '<div class="pph-tags"><span class="pph-tag" style="color:var(--accent);border-color:var(--accent)">Applications open, check careers page</span>' +
+    '<span class="pph-tag">' + p.salary + '</span>' + programSectors(p).map(function(s){ return '<span class="pph-tag">' + s + '</span>'; }).join("") + (realSubs > 0 ? '<span class="pph-tag">' + realSubs + ' submissions</span>' : '') + '</div>';
 
   var realStats = p.realStats;
   var hasCurated = p.avgDays > 0;
@@ -907,7 +904,7 @@ function renderProgramPage(p) {
       '</div>';
   } else {
     statsHTML = '<div style="padding:.95rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:1.25rem;font-size:13px;color:var(--muted)">' +
-      'Stats like response rate and offer rate will appear here once enough people share their experience with this program. <span style="color:var(--accent);cursor:pointer" onclick="openModalFor(\'feed\')">Add yours \u2192</span></div>';
+      'Stats like response rate and offer rate will appear here once enough people share their experience with this program. <span style="color:var(--accent);cursor:pointer;text-decoration:underline" onclick="openModalFor(\'feed\')">Add yours</span></div>';
   }
   document.getElementById("ppStats").innerHTML = statsHTML;
 
@@ -916,7 +913,6 @@ function renderProgramPage(p) {
     '<div class="post-input" style="color:var(--muted2);display:flex;align-items:center">What happened with your ' + p.company + ' application? Click to share\u2026</div></div></div>';
   if (p.feed.length === 0) {
     feedHTML += '<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted)">' +
-      '<div style="font-size:1.5rem;margin-bottom:.6rem">\u270D\uFE0F</div>' +
       '<div style="font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:.3rem">No updates yet</div>' +
       '<div style="font-size:12.5px">Be the first to share your experience with this program.</div></div>';
   }
@@ -928,8 +924,8 @@ function renderProgramPage(p) {
       '<div class="fi-body">' + f.body + '</div>' +
       '<div class="fi-footer">' +
         '<button class="fi-action" onclick="like(this)">\u2661 <span>' + f.likes + '</span></button>' +
-        '<button class="fi-action">\uD83D\uDCAC reply</button>' +
-        (f.id ? '<button class="fi-action" onclick="reportPost(\'' + f.id + '\', this)">\uD83D\uDEA9 report</button>' : '') +
+        '<button class="fi-action">Reply</button>' +
+        (f.id ? '<button class="fi-action" onclick="reportPost(\'' + f.id + '\', this)">Report</button>' : '') +
         '<button class="me-too' + (f.metoo > 0 && f.stage === "waiting" ? " active" : "") + '" onclick="metoo(this)">+ me too <span class="mt-count">' + f.metoo + '</span></button>' +
       '</div></div>';
   }).join("");
@@ -977,7 +973,7 @@ function renderProgramPage(p) {
       '<div style="font-size:11px;color:var(--muted2);margin-bottom:.35rem">Community reports (' + entries.length + ')</div>' +
       entries.map(function(c) {
         return '<div style="margin-bottom:.35rem;display:flex;justify-content:space-between;gap:.5rem"><span><span style="font-size:11px;color:var(--muted)">' + c.who + '</span> \u2014 ' + c.body + '</span>' +
-          (c.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;white-space:nowrap" onclick="reportPost(\'' + c.id + '\', this)">\uD83D\uDEA9</button>' : '') + '</div>';
+          (c.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;white-space:nowrap;text-decoration:underline" onclick="reportPost(\'' + c.id + '\', this)">Report</button>' : '') + '</div>';
       }).join("") + '</div>';
   }
 
@@ -987,13 +983,17 @@ function renderProgramPage(p) {
   }
 
   var procHTML = '<div>';
+  var totalStages = p.process.length;
   p.process.forEach(function(s, i) {
     var matches = communityProcess.filter(function(c) {
       return c.stageName && c.stageName.trim().toLowerCase() === s.s.trim().toLowerCase();
     });
     if (matches.length > 0) matchedStageNames[s.s.trim().toLowerCase()] = true;
+    var funnelWidth = totalStages > 1 ? Math.round(100 - (i / (totalStages - 1)) * 52) : 100;
     procHTML += '<div class="tl-row"><div class="tl-dot' + (s.now ? ' now' : '') + '">' + (i+1) + '</div>' +
-      '<div><div class="tl-stage">' + s.s + '</div>' + stageExplanationHtml(s.s) + '<div class="tl-timing">' + s.t + '</div><div class="tl-sub">' + s.d + '</div>' +
+      '<div style="flex:1"><div class="tl-stage">' + s.s + '</div>' + stageExplanationHtml(s.s) + '<div class="tl-timing">' + s.t + '</div>' +
+      '<div class="tl-funnel"><div class="tl-funnel-bar" style="width:' + funnelWidth + '%"></div></div>' +
+      '<div class="tl-sub">' + s.d + '</div>' +
       (matches.length > 0 ? communityReportsHtml(matches) : '') + '</div></div>';
   });
   procHTML += '</div>';
@@ -1028,7 +1028,8 @@ function renderProgramPage(p) {
   }
 
   procHTML += '<div style="margin-top:.85rem;text-align:center"><button style="background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:6px;padding:.45rem 1rem;font-family:var(--sans);font-size:13px;cursor:pointer" onclick="openModalFor(\'process\')">+ Share a process step</button></div>';
-  document.getElementById("tab-process").innerHTML = procHTML;
+  document.getElementById("tab-process").innerHTML =
+    '<div style="font-size:11.5px;color:var(--muted2);margin-bottom:1rem">The bar under each stage shows roughly where it sits in the process, not a measured drop-off rate.</div>' + procHTML;
 
   var communityQuestions = p.communityQuestions || [];
   var qHTML = p.questions.map(function(q) {
@@ -1043,7 +1044,7 @@ function renderProgramPage(p) {
     qHTML += '<div class="section-label" style="margin-top:1rem">Community reports</div>' + communityQuestions.map(function(q) {
       return '<div class="q-item"><div class="q-text">\u201c' + q.q + '\u201d</div>' +
         '<div class="q-row"><span class="q-tag">' + q.who + '</span>' +
-        (q.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;margin-right:.4rem" onclick="reportPost(\'' + q.id + '\', this)">\uD83D\uDEA9</button>' : '') +
+        (q.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;margin-right:.4rem;text-decoration:underline" onclick="reportPost(\'' + q.id + '\', this)">Report</button>' : '') +
         '<button class="q-votes" onclick="var n=parseInt(this.innerHTML.replace(\'&#9650; \',\'\'))+1;this.innerHTML=\'&#9650; \'+n;this.style.color=\'var(--accent)\'">\u25b2 0</button></div></div>';
     }).join("");
   }
@@ -1060,7 +1061,7 @@ function renderProgramPage(p) {
   if (communityReviews.length > 0) {
     rHTML += '<div class="section-label" style="margin-top:1rem">Community reports</div>' + communityReviews.map(function(r) {
       return '<div class="review-item"><div class="review-header"><span class="review-who">' + r.who + '</span><span class="review-stars">' + stars(r.stars) + '</span>' +
-        (r.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer" onclick="reportPost(\'' + r.id + '\', this)">\uD83D\uDEA9 report</button>' : '') +
+        (r.id ? '<button style="background:none;border:none;color:var(--muted2);font-size:11px;cursor:pointer;text-decoration:underline" onclick="reportPost(\'' + r.id + '\', this)">Report</button>' : '') +
         '</div><div class="review-text">' + r.text + '</div></div>';
     }).join("");
   }
