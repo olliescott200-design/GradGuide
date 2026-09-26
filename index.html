@@ -36,8 +36,6 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .logo{font-family:var(--serif);font-size:1.25rem;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:.5rem;cursor:pointer}
 .logo-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block}
 .nav-right{display:flex;align-items:center;gap:.75rem}
-.nav-link{font-size:13px;color:var(--muted);cursor:pointer;transition:color .15s;background:none;border:none;font-family:var(--sans);padding:0}
-.nav-link:hover{color:var(--text)}
 .post-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.4rem 1rem;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s}
 .post-btn:hover{opacity:.88}
 #home{max-width:1080px;margin:0 auto;padding:2.25rem 2rem}
@@ -183,7 +181,6 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 @media (max-width: 680px) {
   nav{padding:0 1rem;height:56px}
   .logo{font-size:1.1rem}
-  .nav-link{display:none}
   .post-btn{padding:.4rem .8rem;font-size:12.5px}
   #home{padding:1.5rem 1rem}
   .home-header{margin-bottom:1.5rem}
@@ -227,8 +224,6 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 <nav>
   <div class="logo" onclick="goHome()"><span class="logo-dot"></span>GradGuide</div>
   <div class="nav-right">
-    <button class="nav-link">2026 season</button>
-    <button class="nav-link">All programs</button>
     <button class="post-btn" onclick="openModal()">+ Post update</button>
   </div>
 </nav>
