@@ -44,11 +44,17 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 .home-header{margin-bottom:2rem}
 .home-header h1{font-family:var(--serif);font-size:2.4rem;font-weight:600;letter-spacing:-.01em;margin-bottom:.5rem}
 .home-header p{color:var(--muted);font-size:14px;max-width:480px}
-.search-row{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
-.search-wrap{position:relative;flex:1;min-width:200px;max-width:340px}
-.search-wrap input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--sans);font-size:14.5px;padding:.65rem .85rem .65rem 2.3rem;outline:none}
+.sector-row{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.search-panel{display:flex;gap:1.25rem;align-items:flex-end;flex-wrap:wrap;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:1.5rem}
+.search-field{display:flex;flex-direction:column;gap:.35rem;min-width:160px}
+.search-field label{font-size:11.5px;font-weight:500;color:var(--muted);text-transform:none}
+.search-wrap{position:relative}
+.search-wrap input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--sans);font-size:14.5px;padding:.65rem .85rem .65rem 2.3rem;outline:none}
 .search-wrap input::placeholder{color:var(--muted2)}
 .search-icon{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted2);font-size:14px;pointer-events:none}
+.search-field select{background:var(--bg);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--sans);font-size:14.5px;padding:.65rem .85rem;outline:none;min-width:150px}
+.search-btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:.7rem 1.6rem;font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.search-btn:hover{opacity:.88}
 .pill{padding:.4rem .95rem;border-radius:100px;border:1px solid var(--border2);font-size:13px;color:var(--muted);cursor:pointer;background:transparent;font-family:var(--sans);transition:all .12s;white-space:nowrap}
 .pill:hover{border-color:var(--text);color:var(--text)}
 .pill.on{background:var(--text);color:var(--bg);border-color:var(--text)}
@@ -183,8 +189,10 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
   .home-header{margin-bottom:1.5rem}
   .home-header h1{font-size:1.8rem}
   .home-header p{font-size:13.5px !important}
-  .search-row{gap:.5rem}
-  .search-wrap{max-width:none;flex:1 1 100%}
+  .sector-row{gap:.4rem}
+  .search-panel{flex-direction:column;align-items:stretch;padding:1rem}
+  .search-field{min-width:0}
+  .search-btn{width:100%}
   .pill{padding:.35rem .8rem;font-size:12.5px}
   .prog-card{flex-wrap:wrap;row-gap:.6rem;padding:1.1rem 0}
   .pc-logo{width:36px;height:36px}
@@ -230,11 +238,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
     <h1>Find your program.</h1>
     <p style="font-size:15px">Response rates, interview questions, who gets hired, and what's happening right now, sourced from real applicants.</p>
   </div>
-  <div class="search-row">
-    <div class="search-wrap">
-      <span class="search-icon">&#x2315;</span>
-      <input type="text" placeholder="Search company or role&#8230;" oninput="filterCards(this.value)">
-    </div>
+  <div class="sector-row">
     <button class="pill on" onclick="filterSector('All',this)">All</button>
     <button class="pill" onclick="filterSector('Finance',this)">Finance</button>
     <button class="pill" onclick="filterSector('Consulting',this)">Consulting</button>
@@ -243,6 +247,27 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
     <button class="pill" onclick="filterSector('Engineering',this)">Engineering</button>
     <button class="pill" onclick="filterSector('Accounting',this)">Accounting</button>
     <button class="pill" onclick="filterSector('Government',this)">Government</button>
+  </div>
+  <div class="search-panel">
+    <div class="search-field" style="flex:1.4">
+      <label>Keyword</label>
+      <div class="search-wrap">
+        <span class="search-icon">&#x2315;</span>
+        <input type="text" id="keywordInput" placeholder="Company or role&#8230;" oninput="filterCards(this.value)">
+      </div>
+    </div>
+    <div class="search-field">
+      <label>Location</label>
+      <select id="locationSelect" onchange="applyFilters(document.getElementById('keywordInput').value)">
+        <option value="">All locations</option>
+        <option value="Sydney">Sydney</option>
+        <option value="Melbourne">Melbourne</option>
+        <option value="Brisbane">Brisbane</option>
+        <option value="Perth">Perth</option>
+        <option value="Canberra">Canberra</option>
+      </select>
+    </div>
+    <button class="search-btn" onclick="applyFilters(document.getElementById('keywordInput').value)">Search</button>
   </div>
   <div class="prog-grid" id="progGrid"></div>
 </div>
@@ -872,10 +897,13 @@ function filterCards(query) { applyFilters(query); }
 
 function applyFilters(query) {
   var q = (query || "").toLowerCase();
+  var locEl = document.getElementById("locationSelect");
+  var loc = locEl ? locEl.value : "";
   var list = programs.filter(function(p) {
     var matchSector = activeSector === "All" || programSectors(p).indexOf(activeSector) > -1;
+    var matchLoc = !loc || p.location.toLowerCase().indexOf(loc.toLowerCase()) > -1;
     var matchQ = !q || p.company.toLowerCase().indexOf(q) > -1 || p.role.toLowerCase().indexOf(q) > -1 || programSectors(p).join(" ").toLowerCase().indexOf(q) > -1;
-    return matchSector && matchQ;
+    return matchSector && matchLoc && matchQ;
   });
   renderCards(list);
 }
