@@ -32,7 +32,11 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55;min-height:100vh}
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;gap:2rem;position:sticky;top:0;z-index:100}
+.nav-tabs{display:flex;gap:1.4rem;flex:1;overflow-x:auto}
+.nav-tab{background:none;border:none;color:var(--muted);font-family:var(--sans);font-size:13px;cursor:pointer;padding:.3rem 0;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.on{color:var(--text);border-bottom-color:var(--accent);font-weight:500}
 .logo{font-family:var(--serif);font-size:1.25rem;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:.5rem;cursor:pointer}
 .logo-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block}
 .nav-right{display:flex;align-items:center;gap:.75rem}
@@ -191,6 +195,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 @media (max-width: 680px) {
   nav{padding:0 1rem;height:56px}
   .logo{font-size:1.1rem}
+  .nav-tabs{display:none}
   .post-btn{padding:.4rem .8rem;font-size:12.5px}
   #home{padding:1.5rem 1rem}
   .home-header{margin-bottom:1.5rem}
@@ -235,6 +240,15 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
 
 <nav>
   <div class="logo" onclick="goHome()"><span class="logo-dot"></span>GradGuide</div>
+  <div class="nav-tabs">
+    <button class="nav-tab" data-sector="Finance" onclick="filterSector('Finance')">Finance</button>
+    <button class="nav-tab" data-sector="Consulting" onclick="filterSector('Consulting')">Consulting</button>
+    <button class="nav-tab" data-sector="Law" onclick="filterSector('Law')">Law</button>
+    <button class="nav-tab" data-sector="Tech" onclick="filterSector('Tech')">Tech</button>
+    <button class="nav-tab" data-sector="Engineering" onclick="filterSector('Engineering')">Engineering</button>
+    <button class="nav-tab" data-sector="Accounting" onclick="filterSector('Accounting')">Accounting</button>
+    <button class="nav-tab" data-sector="Government" onclick="filterSector('Government')">Government</button>
+  </div>
   <div class="nav-right">
     <button class="post-btn" onclick="openModal()">+ Post update</button>
   </div>
@@ -268,14 +282,14 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
     </div>
   </div>
   <div class="sector-row">
-    <button class="pill on" onclick="filterSector('All',this)">All</button>
-    <button class="pill" onclick="filterSector('Finance',this)">Finance</button>
-    <button class="pill" onclick="filterSector('Consulting',this)">Consulting</button>
-    <button class="pill" onclick="filterSector('Law',this)">Law</button>
-    <button class="pill" onclick="filterSector('Tech',this)">Tech</button>
-    <button class="pill" onclick="filterSector('Engineering',this)">Engineering</button>
-    <button class="pill" onclick="filterSector('Accounting',this)">Accounting</button>
-    <button class="pill" onclick="filterSector('Government',this)">Government</button>
+    <button class="pill on" data-sector="All" onclick="filterSector('All')">All</button>
+    <button class="pill" data-sector="Finance" onclick="filterSector('Finance')">Finance</button>
+    <button class="pill" data-sector="Consulting" onclick="filterSector('Consulting')">Consulting</button>
+    <button class="pill" data-sector="Law" onclick="filterSector('Law')">Law</button>
+    <button class="pill" data-sector="Tech" onclick="filterSector('Tech')">Tech</button>
+    <button class="pill" data-sector="Engineering" onclick="filterSector('Engineering')">Engineering</button>
+    <button class="pill" data-sector="Accounting" onclick="filterSector('Accounting')">Accounting</button>
+    <button class="pill" data-sector="Government" onclick="filterSector('Government')">Government</button>
   </div>
   <div class="search-panel">
     <div class="search-field" style="flex:1.4">
@@ -915,11 +929,14 @@ function renderCards(list) {
   }).join("");
 }
 
-function filterSector(sector, btn) {
+function filterSector(sector) {
   activeSector = sector;
-  document.querySelectorAll(".pill").forEach(function(p) { p.classList.remove("on"); });
-  btn.classList.add("on");
-  applyFilters();
+  document.querySelectorAll("[data-sector]").forEach(function(p) {
+    p.classList.toggle("on", p.dataset.sector === sector);
+  });
+  if (document.getElementById("program-page").style.display === "block") goHome();
+  var kw = document.getElementById("keywordInput");
+  applyFilters(kw ? kw.value : "");
 }
 
 function filterCards(query) { applyFilters(query); }
