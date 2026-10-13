@@ -248,6 +248,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
     <button class="nav-tab" data-sector="Engineering" onclick="filterSector('Engineering')">Engineering</button>
     <button class="nav-tab" data-sector="Accounting" onclick="filterSector('Accounting')">Accounting</button>
     <button class="nav-tab" data-sector="Government" onclick="filterSector('Government')">Government</button>
+    <button class="nav-tab" data-sector="Science" onclick="filterSector('Science')">Science</button>
   </div>
   <div class="nav-right">
     <button class="post-btn" onclick="openModal()">+ Post update</button>
@@ -290,6 +291,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
     <button class="pill" data-sector="Engineering" onclick="filterSector('Engineering')">Engineering</button>
     <button class="pill" data-sector="Accounting" onclick="filterSector('Accounting')">Accounting</button>
     <button class="pill" data-sector="Government" onclick="filterSector('Government')">Government</button>
+    <button class="pill" data-sector="Science" onclick="filterSector('Science')">Science</button>
   </div>
   <div class="search-panel">
     <div class="search-field" style="flex:1.4">
@@ -386,6 +388,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2r
         <label class="pill" style="cursor:pointer"><input type="checkbox" value="Engineering" style="margin-right:.3rem">Engineering</label>
         <label class="pill" style="cursor:pointer"><input type="checkbox" value="Accounting" style="margin-right:.3rem">Accounting</label>
         <label class="pill" style="cursor:pointer"><input type="checkbox" value="Government" style="margin-right:.3rem">Government</label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" value="Science" style="margin-right:.3rem">Science</label>
         <label class="pill" style="cursor:pointer"><input type="checkbox" value="Other" style="margin-right:.3rem">Other</label>
       </div>
     </div>
@@ -895,9 +898,332 @@ var programs = [
       {who:"Prosple \u00b7 Various \u00b7 2025",stars:4,text:"Economist Stream asked a combination of economic and behavioural questions. Economics questions were based on current policy issues including COVID, housing, and trade-offs in fiscal policy. 4 questions total in the interview. Be informed about current economic events and come with a specific policy area you are ready to defend in depth."},
       {who:"Glassdoor \u00b7 Canberra \u00b7 2026",stars:4,text:"Single 30-minute panel interview, very formal and efficient. Conducted over Teams \u2014 sign out of your personal account first. Questions provided 15 minutes before with unprovided follow-ups during the interview. Covers leadership, ownership, delivery, and decision-making. Overall process took 5 months."}
     ]
+  },
+  {
+    id:"ey",
+    company:"EY",
+    role:"Graduate Program - Assurance / Tax / Consulting / Strategy & Transactions",
+    sector:"Accounting",
+    location:"Sydney / Melbourne / Brisbane / Perth",
+    status:"open",
+    closes:"",
+    abbr:"EY",
+    bg:"#f8f1d6",
+    color:"#6b5400",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"Rolling",d:"Apply online with your CV, academic transcript and photo ID such as a passport. Open to final-year students and graduates from the last 24 months. EY says it can take up to six weeks to hear back after applying."},
+      {s:"Online Job Simulation",t:"After applying",d:"An online simulation that includes a video section where you record about three answers. Earlier intakes reported numerical, verbal and values-based online tests at this point instead, so go by what your invite says."},
+      {s:"Recruitment Day",t:"Virtual or in person",d:"An interview with a senior leader or partner plus a group case study with other candidates. EY phones you after the day with the outcome."},
+      {s:"Offer",t:"After the Recruitment Day",d:"Offers are conditional on employment screening carried out by EY or an external provider."}
+    ],
+    questions:[],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"kpmg",
+    company:"KPMG",
+    role:"Graduate Program - Audit / Tax / Consulting / Deal Advisory",
+    sector:"Accounting",
+    location:"Sydney / Melbourne / Brisbane / Perth / Canberra",
+    status:"open",
+    closes:"",
+    abbr:"KP",
+    bg:"#e6ecf7",
+    color:"#1f3c88",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"Rolling intake",d:"Upload your CV (KPMG says no cover letter is needed) and list your preferences. One application covers multiple roles and service lines, and applications are assessed on a rolling basis."},
+      {s:"Online Assessments",t:"After applying",d:"Two short online assessments: one on problem-solving and one on workplace behaviours. Some candidates report a short recorded video question at this stage as well."},
+      {s:"Interview or Assessment Centre",t:"If shortlisted",d:"The format varies by program and year. Reported versions include a video interview, interviews with a manager and a partner, or an assessment centre with group activities, a 30 minute individual interview and a short written task."},
+      {s:"Outcome",t:"Varies",d:"Reported timelines range from about a week to around three months from application to outcome."}
+    ],
+    questions:[
+      {q:"Why KPMG?",type:"Motivational",stage:"Interview",votes:0}
+    ],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"nab",
+    company:"NAB",
+    role:"Graduate Program - Banking, Technology & Agribusiness",
+    sector:"Finance",
+    location:"Melbourne / Sydney",
+    status:"open",
+    closes:"",
+    abbr:"NB",
+    bg:"#f3e9e9",
+    color:"#7a2a2a",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"2028 intake open now",d:"An online form covering your academic and work experience, where you nominate your preferred business area. Applications for the 2028 intake are open, with online testing closing in April 2027. NAB has said temporary visa holders are not eligible, so check the current criteria."},
+      {s:"Online Assessment and Video Interview",t:"After applying",d:"A set of online assessments plus recorded answers to a few video interview questions. Candidates also describe a psychometric or personality questionnaire in this stage."},
+      {s:"Engagement Centre",t:"Final stage",d:"NAB's final stage combines a group activity with an individual or panel interview. One reported group task had a team of about seven working out how to improve the customer experience at the bank."},
+      {s:"Offer",t:"Start in February",d:"Graduates typically start in February in a program designed to give broad experience across the bank, with access to NAB's Career Qualified in Banking accreditation."}
+    ],
+    questions:[
+      {q:"Why do you want to work for NAB?",type:"Motivational",stage:"Interview",votes:0},
+      {q:"Group activity: in a team of about seven, work out how to improve the customer experience at the bank.",type:"Group exercise",stage:"Engagement Centre",votes:0}
+    ],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"westpac",
+    company:"Westpac",
+    role:"Graduate Program - Banking, Technology & Institutional Bank",
+    sector:"Finance",
+    location:"Sydney",
+    status:"open",
+    closes:"",
+    abbr:"WP",
+    bg:"#fbe9ea",
+    color:"#a8272d",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"Opens in July",d:"About 10 minutes online: submit your resume and academic transcript. Westpac's usual graduate window opens in July and closes in August. The Institutional Bank programs run earlier, around March and April."},
+      {s:"Online Assessments",t:"After applying",d:"A series of online assessments if your application progresses. Candidates describe psychometric tests (numerical and logic) and a culture-fit questionnaire. For the Institutional Bank pathway the invite asks you to finish them within 48 hours."},
+      {s:"Video Interview",t:"If shortlisted",d:"A pre-recorded video interview about your experiences, your motivations and what makes you an 'Uncommon Mind', Westpac's phrase for what it looks for. Some candidates report two recorded rounds."},
+      {s:"Virtual Assessment Centre",t:"September to October",d:"Westpac describes this as a virtual assessment centre with a range of interactive activities. Candidates report a mix of group exercises, a case study and an individual interview, sometimes with a senior leader."},
+      {s:"Offer",t:"Start in February",d:"Graduates join as permanent employees from February."}
+    ],
+    questions:[
+      {q:"What are your experiences and motivations, and what makes you an 'Uncommon Mind'?",type:"Motivational",stage:"Video interview",votes:0}
+    ],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"macquarie",
+    company:"Macquarie Group",
+    role:"Graduate Programme - Multiple business groups",
+    sector:"Finance",
+    location:"Sydney / Melbourne",
+    status:"open",
+    closes:"",
+    abbr:"MQ",
+    bg:"#e8f0ec",
+    color:"#235a3f",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"Dates vary by programme",d:"Apply once through the online form and rank your business area preferences. Macquarie only considers your second preference if your profile suits that area, and it uses the first application it receives from you. Windows differ between programmes, so check the careers page for dates."},
+      {s:"Psychometric Assessment",t:"After application review",d:"Macquarie's Early Careers team reviews your application, then invites you to an online psychometric assessment that takes about an hour. Macquarie says the practice assessment your recruiter sends is the only genuine practice version."},
+      {s:"Video Interview",t:"If you pass the assessment",d:"A pre-recorded interview with questions about the opportunity and your motivation for working in that business area."},
+      {s:"Superday",t:"Virtual or in person",d:"Several interviews with members of the business in one session. You may be asked to verify your psychometric results, and graduate candidates can be invited to a final interview afterwards."},
+      {s:"Offer",t:"Timing varies",d:"Offers are followed by background checks. Macquarie says everyone who reaches the Superday or final interview stage gets feedback on the outcome."}
+    ],
+    questions:[
+      {q:"What motivates you to work in this business area at Macquarie?",type:"Motivational",stage:"Video interview",votes:0}
+    ],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"ato",
+    company:"Australian Taxation Office (ATO)",
+    role:"Graduate Program - Generalist, Data, HR, Engineering and other streams",
+    sector:"Government",
+    location:"Canberra / Various",
+    status:"open",
+    closes:"",
+    abbr:"ATO",
+    bg:"#e8edf5",
+    color:"#2a4a7a",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"Opens in March",d:"Apply through the ATO or the Australian Government Graduate Program portal, including your academic transcript. Recent rounds opened in early March and closed in early April, and the next round is expected to open in March 2027. Applicants must be Australian citizens."},
+      {s:"Online Skills Assessment",t:"Late April",d:"Application screening runs through March and April, followed by an online assessment in late April. Some candidates report a written case study, such as replying to a client's email enquiry."},
+      {s:"Online Assessment Centre",t:"Includes an interview",d:"A virtual assessment centre with activities and an interview. Candidates report a group interview and a one-on-one interview, sometimes on the same day. The ATO suggests answering in the STAR format: Situation, Task, Action, Result."},
+      {s:"Merit Pool and Offer",t:"Can take months",d:"Successful candidates go into a merit pool and positions are filled from it. Some roles need security clearances. One applicant described around seven months from applying to receiving an offer letter. Unsuccessful candidates can ask for feedback on their assessment centre. The program starts in early February and runs for 12 months."}
+    ],
+    questions:[
+      {q:"Case study: reply to a client's email enquiry.",type:"Written task",stage:"Online assessment",votes:0}
+    ],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"atlassian",
+    company:"Atlassian",
+    role:"Graduate - Software Engineering, Machine Learning, Product & Design",
+    sector:"Tech",
+    location:"Sydney",
+    status:"open",
+    closes:"",
+    abbr:"ATL",
+    bg:"#e5eefb",
+    color:"#1c4fa3",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Application",t:"Opens around July",d:"Submit an application with an up-to-date resume. Atlassian says graduate applications open around July for a start the following July. Recent intakes were open to Australian and New Zealand citizens, permanent residents and student-visa holders with full work rights after graduation."},
+      {s:"Online Assessment",t:"After applying",d:"Engineering candidates commonly report a timed online coding assessment on HackerRank. Other roles use different tasks, so ask your recruiter what applies to yours."},
+      {s:"Recruiter Screen",t:"Short call",d:"A short conversation with a recruiter before the final round."},
+      {s:"Final Round",t:"Virtual",d:"Atlassian runs interviews virtually and describes this stage as craft assessments and interviews. Engineering candidates report a values interview, one or more coding or technical interviews and a behavioural interview with a hiring manager, with system design for some frontend roles."},
+      {s:"Offer",t:"After the final round",d:"Interviewers consolidate their feedback and an offer follows if there is a fit with the role."}
+    ],
+    questions:[
+      {q:"Expect values-based questions tied to Atlassian's five company values.",type:"Behavioural",stage:"Values interview",votes:0}
+    ],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"woolworths",
+    company:"Woolworths Group",
+    role:"Graduate Program - Technology / Finance / Commercial / Supply Chain / People",
+    sector:"Finance",
+    sectors:["Finance","Tech"],
+    location:"Sydney",
+    status:"open",
+    closes:"",
+    abbr:"WW",
+    bg:"#e8f0eb",
+    color:"#2a5a3b",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"Dates vary by stream",d:"Apply online for the stream you want, such as Technology, Finance, Commercial or Supply Chain. Programs run for one to two years (the Technology program is two years and based in Sydney). Intake windows differ between streams, so check the careers page."},
+      {s:"Online Assessments",t:"After applying",d:"Woolworths says assessments can include psychometric and cognitive tests and recorded video responses, and that the exact mix depends on the stream."},
+      {s:"Video Interview",t:"If you progress",d:"A recorded interview, listed as its own step after the online assessments."},
+      {s:"Assessment Centre",t:"Format varies by stream",d:"Woolworths lists an assessment centre as the next step. Group exercises and case-style tasks are commonly reported."},
+      {s:"Panel Interview",t:"Final stage",d:"The process finishes with a panel interview before offers."}
+    ],
+    questions:[],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"riotinto",
+    company:"Rio Tinto",
+    role:"Graduate Program - Engineering, Geoscience & Business",
+    sector:"Engineering",
+    location:"Perth / Brisbane / Various sites",
+    status:"open",
+    closes:"",
+    abbr:"RT",
+    bg:"#fbe9ea",
+    color:"#b54040",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"Annual intake",d:"Apply online for your graduate stream, such as engineering, geoscience or business. The program receives a lot of applications and candidates report long waits between stages."},
+      {s:"Online Assessments",t:"After applying",d:"Candidates report one or two rounds of online testing: cognitive and psychometric tests, with some gamified tasks. Some describe a numerical and verbal reasoning test plus a behavioural questionnaire."},
+      {s:"One-way Video Interview",t:"About 30 minutes",d:"A recorded interview covering your motivation for the role and behavioural questions about past situations. One candidate noted it needs a locked-down browser."},
+      {s:"Live Interview",t:"Phone, video or in person",d:"A conversation with a recruiter or the team you would join, including superintendents or managers. Operational roles may involve a site visit."},
+      {s:"Checks and Offer",t:"Varies",d:"Operational roles have been reported to depend on medical and right-to-work checks before an offer. Some candidates describe the whole process taking around two months or more from application."}
+    ],
+    questions:[
+      {q:"Why do you want to work for Rio Tinto?",type:"Motivational",stage:"Interview",votes:0},
+      {q:"Expect situational problem-solving scenarios and questions about your future aspirations.",type:"Situational",stage:"Interview",votes:0}
+    ],
+    feed:[],
+    reviews:[]
+  },
+  {
+    id:"csl",
+    company:"CSL",
+    role:"Graduate Program - Science, Technology & Finance",
+    sector:"Science",
+    location:"Melbourne",
+    status:"open",
+    closes:"",
+    abbr:"CSL",
+    bg:"#e6f1f4",
+    color:"#1d5f73",
+    submissions:0,
+    responseRate:0,
+    interviewRate:0,
+    offerRate:0,
+    avgDays:0,
+    activity:0,
+    salary:"",
+    topUnis:[],
+    topDegrees:[],
+    process:[
+      {s:"Online Application",t:"Opens around May",d:"An online form that asks why you would be a good fit for the program. CSL has opened graduate applications in May and June in recent years. Streams include science, digital and technology, and finance, mostly based in Melbourne."},
+      {s:"Online Assessment and Video Response",t:"After applying",d:"A short online assessment plus recorded video answers about your motivations. CSL says it uses this stage to learn about your skills and preferred ways of working so it can match you to a team. Candidates also report psychometric and behavioural tests."},
+      {s:"Assessment Centre",t:"Final step",d:"A group exercise and a short interview. Candidates report brainstorming an idea to improve part of the company and presenting it to the interviewers, and preparing a short talk on one of CSL's values."},
+      {s:"Offer",t:"Around 3 months overall",d:"Some candidates describe four or five stages over about three months, with decisions made by the teams you would be placed in rather than HR alone."}
+    ],
+    questions:[
+      {q:"Prepare a short presentation on your take on one of CSL's values.",type:"Presentation",stage:"Assessment Centre",votes:0},
+      {q:"Group exercise: brainstorm an idea to improve an aspect of the company and present it to the interviewers.",type:"Group exercise",stage:"Assessment Centre",votes:0}
+    ],
+    feed:[],
+    reviews:[]
   }
-
-
 ];
 var activeSector = "All";
 var activeProgram = null;
@@ -1004,7 +1330,7 @@ function renderProgramPage(p) {
     '<div class="pph-top"><div class="pph-logo" style="background:' + p.bg + ';color:' + p.color + '">' + p.abbr + '</div>' +
     '<div><div class="pph-name">' + p.company + '</div><div class="pph-sub">' + p.role + ' \u00b7 ' + p.location + '</div></div></div>' +
     '<div class="pph-tags"><span class="pph-tag" style="color:var(--accent);border-color:var(--accent)">Applications open, check careers page</span>' +
-    '<span class="pph-tag">' + p.salary + '</span>' + programSectors(p).map(function(s){ return '<span class="pph-tag">' + s + '</span>'; }).join("") + (realSubs > 0 ? '<span class="pph-tag">' + realSubs + ' submissions</span>' : '') + '</div>';
+    (p.salary ? '<span class="pph-tag">' + p.salary + '</span>' : '') + programSectors(p).map(function(s){ return '<span class="pph-tag">' + s + '</span>'; }).join("") + (realSubs > 0 ? '<span class="pph-tag">' + realSubs + ' submissions</span>' : '') + '</div>';
 
   var realStats = p.realStats;
   var hasCurated = p.avgDays > 0;
